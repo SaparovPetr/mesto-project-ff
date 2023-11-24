@@ -25,39 +25,24 @@ const cardsLinksOnly = initialCards.map(function (el) {
 });
 
 let placeName = cardsNamesOnly[0];
+
 let placeImagine = cardsLinksOnly[0];
 
 
 
 function addCard(link, name) {
+ 
   const cardTemplate = document.querySelector('#card-template').content;
+  
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   
   cardElement.querySelector('.card__image').src = link;
   cardElement.querySelector('.card__title').textContent = name;
-  
-  /// удаление
-  // cardElement.querySelector('.card__delete-button') = trash; 
-  
-  // const cardDeleteButton = content.cardElement('.card__delete-button');
-
-  // cardDeleteButton.addEventListener('click', function () {
-  //   deleteCard();  
-  // });
-  /// удаление
+ 
 
   placesList.append(cardElement);  
 }
 
-
-
-// function deleteCard () {
-//   // const cardTemplate = document.querySelector('#card-template').content;
-  
-//   // const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
-
-//   placesList.remove(cardElement);
-// };
 
 
 
@@ -75,10 +60,6 @@ for (let i = 0; i <= 5; i = i + 1) {
   placeImagine = cardsLinksOnly[i];
   addCard(placeImagine, placeName);
 }
-
-
-
-
 
 // Понимаю, что кнопка задумана не для выведения дополнительных карточек, сделал по приколу. Потом уберу. 
 addButton.addEventListener('click', function () {
