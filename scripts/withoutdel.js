@@ -22,21 +22,17 @@ function addCard(link, name) {
   
   cardElement.querySelector('.card__image').src = link;
   cardElement.querySelector('.card__title').textContent = name;
-   
-  cardElement.querySelector('.card__delete-button').addEventListener('click', function () {
-    deleteCard();
-  });
+  
+  /// удаление
+ 
 
-  function deleteCard () {
-    cardElement.remove();
-  };
+
+
+  /// удаление
 
   placesList.append(cardElement);  
 }
 
-function deleteCard () {
-  placesList.remove(cardElement);
-};
 
 
 for (let i = 0; i <= 5; i = i + 1) {
