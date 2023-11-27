@@ -1,60 +1,28 @@
+const cardTemplate = document.querySelector('#card-template').content;
 const content = document.querySelector('.content');
-const addButton = content.querySelector('.profile__add-button');
 const placesList = content.querySelector('.places__list');
-
-
 const cardsNamesOnly = initialCards.map(function (el) {
   return el.name;
 });
-
 const cardsLinksOnly = initialCards.map(function (el) {
   return el.link;
 });
 
-let placeName = cardsNamesOnly[0];
-let placeImagine = cardsLinksOnly[0];
-
-
-
-function addCard(link, name) {
-  const cardTemplate = document.querySelector('#card-template').content;
+function addCard(placeLink, placeName, removing) {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
-  
-  cardElement.querySelector('.card__image').src = link;
-  cardElement.querySelector('.card__title').textContent = name;
-   
-  cardElement.querySelector('.card__delete-button').addEventListener('click', function () {
-    deleteCard();
+  cardElement.querySelector('.card__image').src = placeLink;
+  cardElement.querySelector('.card__image').alt = placeName;
+  cardElement.querySelector('.card__title').textContent = placeName;
+  cardElement.querySelector('.card__delete-button').addEventListener('click', function() {
+    removing(cardElement);
   });
-
-  function deleteCard () {
-    cardElement.remove();
-  };
-
   placesList.append(cardElement);  
 }
 
-function deleteCard () {
-  placesList.remove(cardElement);
-};
-
-
-for (let i = 0; i <= 5; i = i + 1) {
-  placeName = cardsNamesOnly[i];
-  placeImagine = cardsLinksOnly[i];
-  addCard(placeImagine, placeName);
+function deleteCard(cardElement) {
+  cardElement.remove();
 }
 
-
-// Понимаю, что кнопка задумана не для выведения дополнительных карточек, сделал по приколу. Потом уберу. 
-addButton.addEventListener('click', function () {
-  for (let i = 6; i <= 9; i = i + 1) {
-    placeName = cardsNamesOnly[i];
-    placeImagine = cardsLinksOnly[i];
-    addCard(placeImagine, placeName);
-  }
-});
-
-
-
-
+for (let i = 0; i < 6; i++)  {
+  addCard(cardsLinksOnly[i], cardsNamesOnly[i], deleteCard);
+}
