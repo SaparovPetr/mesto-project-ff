@@ -2,18 +2,27 @@ import '../pages/index.css';
 
 import { initialCards } from './cards'
 
+
+
+
+
 const cardTemplate = document.querySelector('#card-template').content;
 const content = document.querySelector('.content');
 const placesList = content.querySelector('.places__list');
 
+const popup = document.querySelector('.popup');
+const popupTypeEdit = document.querySelector('.popup_type_edit');
+const popupTypeNewCard = document.querySelector('.popup_type_new-card');
+const popupTypeImage = document.querySelector('.popup_type_image');
+
 const editButton = document.querySelector('.profile__edit-button');
 const addButton = document.querySelector('.profile__add-button');
 
-let popupCloseButton = document.querySelectorAll('.popup__close');
 
-const popup = document.querySelectorAll('.popup');
-const popupTypeEdit = document.querySelector('.popup_type_edit');
-const popupTypeNewCard = document.querySelector('.popup_type_new-card');
+
+const popupCloseButton = document.querySelector('.popup__close');
+const popupContent = document.querySelector('.popup__content');
+
 
 function createCard(objectFromArray, removing) {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
@@ -62,29 +71,14 @@ addButton.addEventListener('click', function () {
 
 // функция закрытия попапа
 function closeModal() {
-  const openedPopup = document.querySelector('.popup_is-opened'); // выбран текущий открытый попап
-  openedPopup.classList.remove('popup_is-opened'); 
+  popup.classList.remove('popup_is-opened');
 }
 
-popupCloseButton.forEach(function(concreteButton) {
-  concreteButton.addEventListener('click', function() {
+// вызов закрытия попапа
+popupCloseButton.addEventListener('click', closeModal);
+popup.addEventListener('click', (evt) => {
+  if (evt.currentTarget === evt.target) { // "если элемент на который кликнули является самым нижним"
     closeModal();
-  }); 
-});
+  }
+})
 
-popup.forEach(function(concreteOverlay) {
-  concreteOverlay.addEventListener('click', (evt) => {
-    if (evt.currentTarget === evt.target) { // "если элемент на который кликнули является самым нижним"
-      closeModal();
-    }
-  });
-});
-
-
-// popup.forEach(function(concretePopup) {
-//   concretePopup.addEventListener('keydown', function (evt) {
-//     if (evt.key === 'Escape') {
-//       closeModal();
-//     }
-//   });
-// });

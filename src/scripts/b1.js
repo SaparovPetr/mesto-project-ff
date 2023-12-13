@@ -2,18 +2,20 @@ import '../pages/index.css';
 
 import { initialCards } from './cards'
 
+
+
+
+
 const cardTemplate = document.querySelector('#card-template').content;
 const content = document.querySelector('.content');
 const placesList = content.querySelector('.places__list');
 
+const popup = document.querySelector('.popup');
 const editButton = document.querySelector('.profile__edit-button');
 const addButton = document.querySelector('.profile__add-button');
+const popupCloseButton = document.querySelector('.popup__close');
+const popupContent = document.querySelector('.popup__content');
 
-let popupCloseButton = document.querySelectorAll('.popup__close');
-
-const popup = document.querySelectorAll('.popup');
-const popupTypeEdit = document.querySelector('.popup_type_edit');
-const popupTypeNewCard = document.querySelector('.popup_type_new-card');
 
 function createCard(objectFromArray, removing) {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
@@ -43,48 +45,25 @@ initialCards.forEach(function(item) {
 
 // функция открытия попапа
 
-function openModal(tengiblePopup) {
-  tengiblePopup.classList.add('popup_is-opened');
+function openModal() {
+  popup.classList.add('popup_is-opened');
 }
 
-// вызов открытия попапа 
-editButton.addEventListener('click', function () {
-  openModal(popupTypeEdit);
-});
-
-addButton.addEventListener('click', function () {
-  openModal(popupTypeNewCard);
-});
-
-
-
+// вызов открытия попапа
+editButton.addEventListener('click', openModal);
+// addButton.addEventListener('click', openModal);
 
 
 // функция закрытия попапа
 function closeModal() {
-  const openedPopup = document.querySelector('.popup_is-opened'); // выбран текущий открытый попап
-  openedPopup.classList.remove('popup_is-opened'); 
+  popup.classList.remove('popup_is-opened');
 }
 
-popupCloseButton.forEach(function(concreteButton) {
-  concreteButton.addEventListener('click', function() {
+// вызов закрытия попапа
+popupCloseButton.addEventListener('click', closeModal);
+popup.addEventListener('click', (evt) => {
+  if (evt.currentTarget === evt.target) { // "если элемент на который кликнули является самым нижним"
     closeModal();
-  }); 
-});
+  }
+})
 
-popup.forEach(function(concreteOverlay) {
-  concreteOverlay.addEventListener('click', (evt) => {
-    if (evt.currentTarget === evt.target) { // "если элемент на который кликнули является самым нижним"
-      closeModal();
-    }
-  });
-});
-
-
-// popup.forEach(function(concretePopup) {
-//   concretePopup.addEventListener('keydown', function (evt) {
-//     if (evt.key === 'Escape') {
-//       closeModal();
-//     }
-//   });
-// });

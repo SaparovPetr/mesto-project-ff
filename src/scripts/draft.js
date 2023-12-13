@@ -10,6 +10,7 @@ const editButton = document.querySelector('.profile__edit-button');
 const addButton = document.querySelector('.profile__add-button');
 
 let popupCloseButton = document.querySelectorAll('.popup__close');
+// const popupContent = document.querySelectorAll('.popup__content');
 
 const popup = document.querySelectorAll('.popup');
 const popupTypeEdit = document.querySelector('.popup_type_edit');
@@ -61,30 +62,15 @@ addButton.addEventListener('click', function () {
 
 
 // функция закрытия попапа
-function closeModal() {
-  const openedPopup = document.querySelector('.popup_is-opened'); // выбран текущий открытый попап
-  openedPopup.classList.remove('popup_is-opened'); 
+function closeModal(cocrete) {
+  cocrete.classList.remove('popup_is-opened');
 }
 
-popupCloseButton.forEach(function(concreteButton) {
-  concreteButton.addEventListener('click', function() {
+
+popupCloseButton.forEach( function(item) {
+  item.addEventListener('click', function() {
     closeModal();
   }); 
 });
 
-popup.forEach(function(concreteOverlay) {
-  concreteOverlay.addEventListener('click', (evt) => {
-    if (evt.currentTarget === evt.target) { // "если элемент на который кликнули является самым нижним"
-      closeModal();
-    }
-  });
-});
-
-
-// popup.forEach(function(concretePopup) {
-//   concretePopup.addEventListener('keydown', function (evt) {
-//     if (evt.key === 'Escape') {
-//       closeModal();
-//     }
-//   });
-// });
+///почему не закрывается попап?
