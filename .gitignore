@@ -1,2 +1,2 @@
 node_modules
-dist
+# dist - не добавляю, чтобы работал сервис GitHub Pages
