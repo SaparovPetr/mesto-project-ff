@@ -10,11 +10,14 @@ const editButton = document.querySelector('.profile__edit-button');
 const addButton = document.querySelector('.profile__add-button');
 
 let popupCloseButton = document.querySelectorAll('.popup__close');
-// const popupContent = document.querySelectorAll('.popup__content');
 
 const popup = document.querySelectorAll('.popup');
 const popupTypeEdit = document.querySelector('.popup_type_edit');
 const popupTypeNewCard = document.querySelector('.popup_type_new-card');
+
+
+
+
 
 function createCard(objectFromArray, removing) {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
@@ -42,17 +45,19 @@ initialCards.forEach(function(item) {
 
 
 
-// функция открытия попапа
 
+// функция открытия попапа
 function openModal(tengiblePopup) {
   tengiblePopup.classList.add('popup_is-opened');
+  document.addEventListener('keydown', closeByEscapeKey);
 }
 
-// вызов открытия попапа 
+// открытие попапа по кнопке редактирования профиля
 editButton.addEventListener('click', function () {
-  openModal(popupTypeEdit);
+  openModal(popupTypeEdit);  
 });
 
+// открытие попапа по кнопке редактирования карточки
 addButton.addEventListener('click', function () {
   openModal(popupTypeNewCard);
 });
@@ -61,16 +66,46 @@ addButton.addEventListener('click', function () {
 
 
 
+
+
 // функция закрытия попапа
-function closeModal(cocrete) {
-  cocrete.classList.remove('popup_is-opened');
+function closeModal() {
+  const openedPopup = document.querySelector('.popup_is-opened'); // выбран текущий открытый попап
+  openedPopup.classList.remove('popup_is-opened');
+  document.removeEventListener('keydown', closeByEscapeKey); 
 }
 
-
-popupCloseButton.forEach( function(item) {
-  item.addEventListener('click', function() {
+// закрытие по клику на крестик
+popupCloseButton.forEach(function(concreteButton) {
+  concreteButton.addEventListener('click', function() {
     closeModal();
   }); 
 });
 
-///почему не закрывается попап?
+// закрытие по клику на оверлей
+popup.forEach(function(concreteOverlay) {
+  concreteOverlay.addEventListener('click', (evt) => {
+    if (evt.currentTarget === evt.target) { // "если элемент на который кликнули является самым нижним"
+      closeModal();
+    }
+  });
+});
+
+// закрытие по нажатию на Escape
+function closeByEscapeKey (event) {
+  if (event.key === 'Escape') {
+    closeModal();
+  }
+}
+
+
+// Формы
+const formElement = document.forms.edit-profile; // Воспользуйтесь методом querySelector()
+const nameInput = formElement.elements.name; // Воспользуйтесь инструментом .querySelector()
+const jobInput = formElement.elements.description;// Воспользуйтесь инструментом .querySelector()
+
+
+
+
+
+// почему возникает ошибка Uncaught ReferenceError: profile is not defined ?

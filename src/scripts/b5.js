@@ -15,6 +15,13 @@ const popup = document.querySelectorAll('.popup');
 const popupTypeEdit = document.querySelector('.popup_type_edit');
 const popupTypeNewCard = document.querySelector('.popup_type_new-card');
 
+const formElement = document.forms.editProfile; 
+const nameInput = formElement.elements.name; 
+const jobInput = formElement.elements.description;
+
+
+
+
 function createCard(objectFromArray, removing) {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   cardElement.querySelector('.card__image').src = objectFromArray.link;
@@ -41,17 +48,19 @@ initialCards.forEach(function(item) {
 
 
 
-// функция открытия попапа
 
+// функция открытия попапа
 function openModal(tengiblePopup) {
   tengiblePopup.classList.add('popup_is-opened');
+  document.addEventListener('keydown', closeByEscapeKey);
 }
 
-// вызов открытия попапа 
+// открытие попапа по кнопке редактирования профиля
 editButton.addEventListener('click', function () {
-  openModal(popupTypeEdit);
+  openModal(popupTypeEdit);  
 });
 
+// открытие попапа по кнопке редактирования карточки
 addButton.addEventListener('click', function () {
   openModal(popupTypeNewCard);
 });
@@ -60,18 +69,23 @@ addButton.addEventListener('click', function () {
 
 
 
+
+
 // функция закрытия попапа
 function closeModal() {
   const openedPopup = document.querySelector('.popup_is-opened'); // выбран текущий открытый попап
-  openedPopup.classList.remove('popup_is-opened'); 
+  openedPopup.classList.remove('popup_is-opened');
+  document.removeEventListener('keydown', closeByEscapeKey); 
 }
 
+// закрытие по клику на крестик
 popupCloseButton.forEach(function(concreteButton) {
   concreteButton.addEventListener('click', function() {
     closeModal();
   }); 
 });
 
+// закрытие по клику на оверлей
 popup.forEach(function(concreteOverlay) {
   concreteOverlay.addEventListener('click', (evt) => {
     if (evt.currentTarget === evt.target) { // "если элемент на который кликнули является самым нижним"
@@ -80,11 +94,26 @@ popup.forEach(function(concreteOverlay) {
   });
 });
 
-
-
-
-document.addEventListener('keydown', function (event) {
+// закрытие по нажатию на Escape
+function closeByEscapeKey (event) {
   if (event.key === 'Escape') {
     closeModal();
   }
-});
+}
+
+
+
+// Формы
+
+// Обработчик «отправки» формы
+function handleFormSubmit(evt) {
+  evt.preventDefault(); 
+  const profileTitle = document.querySelector('.profile__title');
+  const profileDescription = document.querySelector('.profile__description');
+  profileTitle.textContent  = nameInput.value;
+  profileDescription.textContent  = jobInput.value;
+  formElement.reset();
+  closeModal();
+}
+
+formElement.addEventListener('submit', handleFormSubmit);

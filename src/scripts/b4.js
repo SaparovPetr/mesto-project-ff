@@ -1,5 +1,4 @@
 import '../pages/index.css';
-
 import { initialCards } from './cards'
 
 const cardTemplate = document.querySelector('#card-template').content;
@@ -41,17 +40,19 @@ initialCards.forEach(function(item) {
 
 
 
-// функция открытия попапа
 
+// функция открытия попапа
 function openModal(tengiblePopup) {
   tengiblePopup.classList.add('popup_is-opened');
+  document.addEventListener('keydown', callback);
 }
 
-// вызов открытия попапа 
+// открытие попапа по кнопке редактирования профиля
 editButton.addEventListener('click', function () {
-  openModal(popupTypeEdit);
+  openModal(popupTypeEdit);  
 });
 
+// открытие попапа по кнопке редактирования карточки
 addButton.addEventListener('click', function () {
   openModal(popupTypeNewCard);
 });
@@ -60,18 +61,23 @@ addButton.addEventListener('click', function () {
 
 
 
+
+
 // функция закрытия попапа
 function closeModal() {
   const openedPopup = document.querySelector('.popup_is-opened'); // выбран текущий открытый попап
-  openedPopup.classList.remove('popup_is-opened'); 
+  openedPopup.classList.remove('popup_is-opened');
+  document.removeEventListener('keydown', callback); 
 }
 
+// закрытие по клику на крестик
 popupCloseButton.forEach(function(concreteButton) {
   concreteButton.addEventListener('click', function() {
     closeModal();
   }); 
 });
 
+// закрытие по клику на оверлей
 popup.forEach(function(concreteOverlay) {
   concreteOverlay.addEventListener('click', (evt) => {
     if (evt.currentTarget === evt.target) { // "если элемент на который кликнули является самым нижним"
@@ -80,11 +86,9 @@ popup.forEach(function(concreteOverlay) {
   });
 });
 
-
-
-
-document.addEventListener('keydown', function (event) {
+// закрытие по нажатию на Escape
+function callback (event) {
   if (event.key === 'Escape') {
     closeModal();
   }
-});
+}
