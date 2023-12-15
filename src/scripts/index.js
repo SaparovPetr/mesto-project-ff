@@ -85,10 +85,6 @@ addButton.addEventListener('click', function () {
 
 
 
-
-
-
-
 // функция закрытия попапа
 function closeModal() {
   const openedPopup = document.querySelector('.popup_is-opened'); // выбран текущий открытый попап
@@ -160,6 +156,8 @@ function likeToggle (evt) {
   }
 };
 
+
+
 // открытие картинки
 function openImage (evt) {      
   if (evt.target.classList.contains('card__image')) {
@@ -170,4 +168,3 @@ function openImage (evt) {
   }
 }
 
-// ___________________________________________________________________
