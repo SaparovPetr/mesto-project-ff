@@ -8,18 +8,36 @@ const placesList = content.querySelector('.places__list');
 
 const editButton = document.querySelector('.profile__edit-button');
 const addButton = document.querySelector('.profile__add-button');
+const cardsImage = document.querySelector('.card__image');
 
-let popupCloseButton = document.querySelectorAll('.popup__close');
+
+
+const popupCloseButton = document.querySelectorAll('.popup__close');
 
 const popup = document.querySelectorAll('.popup');
 const popupTypeEdit = document.querySelector('.popup_type_edit');
 const popupTypeNewCard = document.querySelector('.popup_type_new-card');
+const popupTypeImage = document.querySelector('.popup_type_image');
 
 
 
 
 
-function createCard(objectFromArray, removing) {
+const formElementForEditProfile = document.forms.editProfile; 
+const nameInput = formElementForEditProfile.elements.name; 
+const jobInput = formElementForEditProfile.elements.description;
+
+const formElementForCreateCard = document.forms.newPlace; 
+const plaseTitle = formElementForCreateCard.elements.placeName; 
+const placeLink = formElementForCreateCard.elements.link; 
+
+const popupImage = document.querySelector('.popup__image');
+const popupCaption = document.querySelector('.popup__caption');
+
+
+
+
+function createCard(objectFromArray, removing, liking) {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   cardElement.querySelector('.card__image').src = objectFromArray.link;
   cardElement.querySelector('.card__image').alt = objectFromArray.name;
@@ -27,6 +45,7 @@ function createCard(objectFromArray, removing) {
   cardElement.querySelector('.card__delete-button').addEventListener('click', function() {
     removing(cardElement);
   });
+  placesList.addEventListener('click', liking);
   return cardElement;
 }
 
@@ -34,13 +53,14 @@ function deleteCard(cardElement) {
   cardElement.remove();
 }
 
-function renderCard(objectFromArray, removing) {
-  const renderedCardElement = createCard(objectFromArray, removing);
+function renderCard(objectFromArray, removing, liking) {
+  const renderedCardElement = createCard(objectFromArray, removing, liking);
   placesList.prepend(renderedCardElement);
 }
 
 initialCards.forEach(function(item) {
-  renderCard(item, deleteCard);
+  renderCard(item, deleteCard, likeToggle);
+  // console.log(item);
 });
 
 
@@ -99,13 +119,71 @@ function closeByEscapeKey (event) {
 }
 
 
+
 // Формы
-const formElement = document.forms.edit-profile; // Воспользуйтесь методом querySelector()
-const nameInput = formElement.elements.name; // Воспользуйтесь инструментом .querySelector()
-const jobInput = formElement.elements.description;// Воспользуйтесь инструментом .querySelector()
+
+// Обработчик «отправки» формы редактирования профиля
+function handleFormSubmit(evt) {
+  evt.preventDefault(); 
+  const profileTitle = document.querySelector('.profile__title');
+  const profileDescription = document.querySelector('.profile__description');
+  profileTitle.textContent  = nameInput.value;
+  profileDescription.textContent  = jobInput.value;
+  formElementForEditProfile.reset();
+  closeModal();
+}
+
+// подтверждание формы редактирования профиля
+formElementForEditProfile.addEventListener('submit', handleFormSubmit);
+
+// Обработчик «отправки» формы добавления карточки
+function newCardFormSubmit(evt) {
+  evt.preventDefault(); 
+  const newObj = {
+    name: plaseTitle.value,
+    link: placeLink.value,
+  }
+  renderCard(newObj, deleteCard); 
+  formElementForCreateCard.reset();
+  closeModal();
+}
+
+// подтверждание формы добавления карточки
+formElementForCreateCard.addEventListener('submit', newCardFormSubmit);
+
+// Лайк карточки
+function likeToggle (evt) {
+  if (evt.target.classList.contains('card__like-button')) {
+    evt.target.classList.toggle('card__like-button_is-active');
+  }
+};
+
+// ___________________________________________________________________
+
+// function openImage() {  
+//   console.log('del');
+//   // openModal(popupTypeImage);
+//   // closeModal();
+// }
+// // открытие картинки
+// cardsImage.addEventListener('click', openImage);
 
 
 
+  
+  
+  
+  function openImage (evt, openedImageLink, openedImageCaption) {      
+    if (evt.target.classList.contains('card__image')) {
 
+      popupImage.src = openedImageLink.link;
+      popupImage.alt = openedImageCaption.name;
+      popupCaption.textContent = openedImageCaption.name;
 
-// почему возникает ошибка Uncaught ReferenceError: profile is not defined ?
+      openModal(popupTypeImage);
+    }
+  }
+
+  placesList.addEventListener ('click', openImage);
+
+  // console.log('I-am here');

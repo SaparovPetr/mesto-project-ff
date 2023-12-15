@@ -8,19 +8,12 @@ const placesList = content.querySelector('.places__list');
 
 const editButton = document.querySelector('.profile__edit-button');
 const addButton = document.querySelector('.profile__add-button');
-const cardsImage = document.querySelector('.card__image');
-
-
 
 const popupCloseButton = document.querySelectorAll('.popup__close');
 
 const popup = document.querySelectorAll('.popup');
 const popupTypeEdit = document.querySelector('.popup_type_edit');
 const popupTypeNewCard = document.querySelector('.popup_type_new-card');
-const popupTypeImage = document.querySelector('.popup_type_image');
-
-
-
 
 
 const formElementForEditProfile = document.forms.editProfile; 
@@ -32,13 +25,9 @@ const plaseTitle = formElementForCreateCard.elements.placeName;
 const placeLink = formElementForCreateCard.elements.link; 
 
 
-const popupImage = document.querySelector('.popup__image');
-const popupCaption = document.querySelector('.popup__caption');
 
 
-
-
-function createCard(objectFromArray, removing, liking, openingImage) {
+function createCard(objectFromArray, removing, liking) {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   cardElement.querySelector('.card__image').src = objectFromArray.link;
   cardElement.querySelector('.card__image').alt = objectFromArray.name;
@@ -47,21 +36,21 @@ function createCard(objectFromArray, removing, liking, openingImage) {
     removing(cardElement);
   });
   placesList.addEventListener('click', liking);
-  placesList.addEventListener ('click', openingImage);
-  return cardElement;  
+  return cardElement;
 }
 
 function deleteCard(cardElement) {
   cardElement.remove();
 }
 
-function renderCard(objectFromArray, removing, liking, openingImage) {
-  const renderedCardElement = createCard(objectFromArray, removing, liking, openingImage);
+function renderCard(objectFromArray, removing, liking) {
+  const renderedCardElement = createCard(objectFromArray, removing, liking);
   placesList.prepend(renderedCardElement);
 }
 
 initialCards.forEach(function(item) {
-  renderCard(item, deleteCard, likeToggle, openImage);
+  renderCard(item, deleteCard, likeToggle);
+  // console.log(item);
 });
 
 
@@ -112,7 +101,6 @@ popup.forEach(function(concreteOverlay) {
   });
 });
 
-// !!! поиск открытого попапа надо делать через условие if, чтобы уменьшить количество поисков по DOM
 // закрытие по нажатию на Escape
 function closeByEscapeKey (event) {
   if (event.key === 'Escape') {
@@ -160,14 +148,6 @@ function likeToggle (evt) {
   }
 };
 
-// открытие картинки
-function openImage (evt) {      
-  if (evt.target.classList.contains('card__image')) {
-    popupImage.src = evt.target.src;
-    popupImage.alt = evt.target.alt;
-    popupCaption.textContent = evt.target.alt;
-    openModal(popupTypeImage);
-  }
-}
-
 // ___________________________________________________________________
+
+

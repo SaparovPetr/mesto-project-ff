@@ -160,6 +160,8 @@ function likeToggle (evt) {
   }
 };
 
+
+
 // открытие картинки
 function openImage (evt) {      
   if (evt.target.classList.contains('card__image')) {
