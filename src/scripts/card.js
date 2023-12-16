@@ -21,25 +21,12 @@ export function renderCard (objectFromArray, removing, liking, openingImage) {
   content.querySelector('.places__list').prepend(renderedCardElement);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// функция удаления элемента карточки ↓
 export function deleteCard(cardElement) {
   cardElement.remove();
 }
 
-// Лайк карточки
+// функция переключения лайка на карточке ↓
 export function likeToggle (evt) {
   if (evt.target.classList.contains('card__like-button')) {
     evt.target.classList.toggle('card__like-button_is-active');
