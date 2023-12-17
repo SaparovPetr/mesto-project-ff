@@ -1,24 +1,16 @@
-const content = document.querySelector('.content');
+export const content = document.querySelector('.content');
 const cardTemplate = document.querySelector('#card-template').content; 
 
 // функция создания элемента карточки ↓
-  function createCard (objectFromArray, removing, liking, openingImage) {
+  export function createCard (outObject, removing, liking, openingImage) {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
-  cardElement.querySelector('.card__image').src = objectFromArray.link;
-  cardElement.querySelector('.card__image').alt = objectFromArray.name;
-  cardElement.querySelector('.card__title').textContent = objectFromArray.name;
-  cardElement.querySelector('.card__delete-button').addEventListener('click', function() {
-    removing(cardElement);
-  });
-  content.querySelector('.places__list').addEventListener('click', liking);
-  content.querySelector('.places__list').addEventListener ('click', openingImage);
-  return cardElement;  
-}
-
-// функция добавления созданного элемента карточки ↓
-export function renderCard (objectFromArray, removing, liking, openingImage) {
-  const renderedCardElement = createCard(objectFromArray, removing, liking, openingImage);
-  content.querySelector('.places__list').prepend(renderedCardElement);
+  cardElement.querySelector('.card__image').src = outObject.link;
+  cardElement.querySelector('.card__image').alt = outObject.name;
+  cardElement.querySelector('.card__title').textContent = outObject.name;
+  cardElement.querySelector('.card__delete-button').addEventListener('click', () => removing(cardElement));
+  cardElement.querySelector('.card__like-button').addEventListener('click', liking);
+  cardElement.querySelector('.card__image').addEventListener ('click', () => openingImage(outObject.link, outObject.name));
+  return cardElement;
 }
 
 // функция удаления элемента карточки ↓
@@ -32,5 +24,3 @@ export function likeToggle (evt) {
     evt.target.classList.toggle('card__like-button_is-active');
   }
 };
-
-

@@ -1,7 +1,7 @@
 // функция-обработчик события клика по оверлею ↓
 export function closeByClickOnOverlay (evt) {  
   if (evt.currentTarget === evt.target) { // "если элемент на который кликнули является самым нижним"
-    closeModal();
+    closeModal(document.querySelector('.popup_is-opened'));
   }
 }
 
@@ -12,16 +12,16 @@ export function openModal(tengiblePopup) {
 }
 
 // функция закрытия модального окна ↓ 
-export function closeModal() {
-  const openedPopup = document.querySelector('.popup_is-opened');
+export function closeModal(openedPopup) {
   openedPopup.classList.remove('popup_is-opened');
   document.removeEventListener('keydown', closeByEscapeKey); 
 }
 
 // функция-обработчик события нажатия Esc ↓
 function closeByEscapeKey (event) {
-  if (event.key === 'Escape' && document.querySelector('.popup_is-opened').classList.contains('popup_is-opened')) {
-    closeModal();
+  if (event.key === 'Escape') {    
+    if (document.querySelector('.popup_is-opened').classList.contains('popup_is-opened')) {
+      closeModal(document.querySelector('.popup_is-opened'));
+    } 
   }
 }
-
