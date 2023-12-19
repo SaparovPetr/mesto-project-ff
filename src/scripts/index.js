@@ -3,6 +3,7 @@ import { initialCards } from './cards';
 import { content, createCard, deleteCard, likeToggle } from './card';
 import { openModal, closeModal, closeByClickOnOverlay } from './modal';
 
+const placeList = content.querySelector('.places__list')
 const editButton = document.querySelector('.profile__edit-button');
 const addButton = document.querySelector('.profile__add-button');
 const popupTypeEdit = document.querySelector('.popup_type_edit');
@@ -22,7 +23,7 @@ const popupCaption = document.querySelector('.popup__caption');
 // функция добавления созданного элемента карточки ↓
 function renderCard (objectFromArray, removing, liking, openingImage) {
   const renderedCardElement = createCard(objectFromArray, removing, liking, openingImage);
-  content.querySelector('.places__list').prepend(renderedCardElement);
+  placeList.prepend(renderedCardElement);
 }
 
 // Обработчик «отправки» формы редактирования профиля ↓

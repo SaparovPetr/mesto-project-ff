@@ -20,8 +20,6 @@ export function closeModal(openedPopup) {
 // функция-обработчик события нажатия Esc ↓
 function closeByEscapeKey (event) {
   if (event.key === 'Escape') {    
-    if (document.querySelector('.popup_is-opened').classList.contains('popup_is-opened')) {
-      closeModal(document.querySelector('.popup_is-opened'));
-    } 
+    closeModal(document.querySelector('.popup_is-opened'));
   }
 }
