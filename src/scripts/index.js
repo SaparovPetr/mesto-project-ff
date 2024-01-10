@@ -11,8 +11,8 @@ const addButton = document.querySelector(".profile__add-button");
 const popupTypeEdit = document.querySelector(".popup_type_edit");
 const popupTypeNewCard = document.querySelector(".popup_type_new-card");
 const popupTypeImage = document.querySelector(".popup_type_image");
-const formElementForEditProfile = document.forms.editProfile;
-const formElementForCreateCard = document.forms.newPlace;
+export const formElementForEditProfile = document.forms.editProfile;
+export const formElementForCreateCard = document.forms.newPlace;
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
 const nameInput = formElementForEditProfile.elements.name;
@@ -33,6 +33,7 @@ function renderCard(objectFromArray, removing, liking, openingImage) {
   placeList.prepend(renderedCardElement);
 }
 
+
 // обработчик «отправки» формы редактирования профиля ↓
 function submitToProfileForm(evt) {
   evt.preventDefault();
@@ -52,6 +53,10 @@ function submitToNewCardForm(evt) {
   renderCard(newObj, deleteCard, likeToggle, openImage);
   formElementForCreateCard.reset();
   closeModal(popupTypeNewCard);
+  
+  /////////////////////////////////////////////////////////
+  clearValidation (formElementForEditProfile, validationConfig); 
+  clearValidation (formElementForCreateCard, validationConfig); 
 }
 
 // открытие картинки ↓
@@ -83,6 +88,10 @@ addButton.addEventListener("click", function () {
 document.querySelectorAll(".popup__close").forEach(function (concreteButton) {
   concreteButton.addEventListener("click", function () {
     closeModal(document.querySelector(".popup_is-opened"));
+
+    /////////////////////////////////////////////////////////
+    clearValidation (formElementForEditProfile, validationConfig); 
+    clearValidation (formElementForCreateCard, validationConfig); 
   });
 });
 
@@ -99,7 +108,10 @@ formElementForCreateCard.addEventListener("submit", submitToNewCardForm);
 
 
 enableValidation(validationConfig); 
-clearValidation ();
+
+// clearValidation(popupTypeNewCard, validationConfig); 
+
+// clearValidation (validationConfig);  
 
 
 
