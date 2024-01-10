@@ -1,4 +1,7 @@
 // функция-обработчик события клика по оверлею ↓
+
+// import { settingsObject, toggleButtonState } from "./validation";
+
 export function closeByClickOnOverlay (evt) {  
   if (evt.currentTarget === evt.target) { // "если элемент на который кликнули является самым нижним"
     closeModal(document.querySelector('.popup_is-opened'));

@@ -113,26 +113,31 @@ formElementForCreateCard.addEventListener("submit", submitToNewCardForm);
 
 
 
+const settingsObject = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+}
 
 
 
 
-
-
-// из задания 7-1
 
 
 const showInputError = (formElement, inputElement, errorMessage) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   inputElement.classList.add("popup__input_type_error");
   errorElement.textContent = errorMessage;
-  errorElement.classList.add("popup__input-error_visible");
+  errorElement.classList.add("popup__error_visible");
 };
 
 const hideInputError = (formElement, inputElement) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   inputElement.classList.remove("popup__input_type_error");
-  errorElement.classList.remove("popup__input-error_visible");
+  errorElement.classList.remove("popup__error_visible");
   errorElement.textContent = "";
 };
 
@@ -152,28 +157,28 @@ const checkInputValidity = (formElement, inputElement) => {
   }
 };
 
-const setEventListeners = (formElement) => {
-  const inputList = Array.from(formElement.querySelectorAll(".popup__input"));
-  const buttonElement = formElement.querySelector('.popup__button');
-  toggleButtonState(inputList, buttonElement);
+const setEventListeners = (formElement, set) => {
+  const inputList = Array.from(formElement.querySelectorAll(`${set.inputSelector}`));
+  const buttonElement = formElement.querySelector(`${set.submitButtonSelector}`);
+  toggleButtonState(inputList, buttonElement, settingsObject);
 
   inputList.forEach((inputElement) => {
     inputElement.addEventListener("input", () => {
       checkInputValidity(formElement, inputElement);
-      toggleButtonState(inputList, buttonElement);
+      toggleButtonState(inputList, buttonElement, settingsObject);
     });
   });
 };
 
-const enableValidation = () => {
+const enableValidation = (set) => {
   const formList = Array.from(
-    document.querySelectorAll(".popup__form_editProfile")
+    document.querySelectorAll(`${set.formSelector}`)
   );  
   formList.forEach((formElement) => {    
     formElement.addEventListener("submit", function (evt) {
       evt.preventDefault();
     });
-    setEventListeners(formElement);
+    setEventListeners(formElement, settingsObject);
   });
 };
 
@@ -183,19 +188,21 @@ const hasInvalidInput = (inputList) => {
   });
 };
 
-const toggleButtonState = (inputList, buttonElement) => {
+const toggleButtonState = (inputList, buttonElement, set) => {
   if (hasInvalidInput(inputList)) {
-    buttonElement.classList.add("button_disabled");
+    buttonElement.classList.add(`${set.inactiveButtonClass}`);
   } else {
-    buttonElement.classList.remove("button_disabled");
+    buttonElement.classList.remove(`${set.inactiveButtonClass}`);
   }
 };
 
 
 
-enableValidation();
 
 
+
+
+enableValidation(settingsObject); 
 
 
 // .popup__form_editProfile

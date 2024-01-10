@@ -121,6 +121,16 @@ formElementForCreateCard.addEventListener("submit", submitToNewCardForm);
 
 // из задания 7-1
 
+const settingsObject = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+}
+
+
 
 const showInputError = (formElement, inputElement, errorMessage) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
@@ -165,9 +175,9 @@ const setEventListeners = (formElement) => {
   });
 };
 
-const enableValidation = () => {
+const enableValidation = (set) => {
   const formList = Array.from(
-    document.querySelectorAll(".popup__form_editProfile")
+    document.querySelectorAll(`${set.formSelector}`)
   );  
   formList.forEach((formElement) => {    
     formElement.addEventListener("submit", function (evt) {
@@ -193,9 +203,11 @@ const toggleButtonState = (inputList, buttonElement) => {
 
 
 
-enableValidation();
 
 
+
+
+enableValidation(settingsObject); 
 
 
 // .popup__form_editProfile

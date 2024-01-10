@@ -33,7 +33,7 @@
   opacity: 0;
 }
 
-.popup__input-error_active {
+.popup__error_visible {
   color: #F00;
   font-family: Inter;
   font-size: 12px;

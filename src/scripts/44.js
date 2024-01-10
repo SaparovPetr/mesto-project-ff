@@ -112,27 +112,31 @@ formElementForCreateCard.addEventListener("submit", submitToNewCardForm);
 
 
 
+const settingsObject = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+}
 
 
 
 
 
 
-
-// из задания 7-1
-
-
-const showInputError = (formElement, inputElement, errorMessage) => {
+const showInputError = (formElement, inputElement, errorMessage, set) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  inputElement.classList.add("popup__input_type_error");
+  inputElement.classList.add(`${set.inputErrorClass}`);
   errorElement.textContent = errorMessage;
-  errorElement.classList.add("popup__input-error_visible");
+  errorElement.classList.add(`${set.errorClass}`);
 };
 
-const hideInputError = (formElement, inputElement) => {
+const hideInputError = (formElement, inputElement, set) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  inputElement.classList.remove("popup__input_type_error");
-  errorElement.classList.remove("popup__input-error_visible");
+  inputElement.classList.remove(`${set.inputErrorClass}`);
+  errorElement.classList.remove(`${set.errorClass}`);
   errorElement.textContent = "";
 };
 
@@ -146,34 +150,34 @@ const checkInputValidity = (formElement, inputElement) => {
   
   
   if (!inputElement.validity.valid) {
-    showInputError(formElement, inputElement, inputElement.validationMessage);
+    showInputError(formElement, inputElement, inputElement.validationMessage, settingsObject);
   } else {
-    hideInputError(formElement, inputElement);
+    hideInputError(formElement, inputElement, settingsObject);
   }
 };
 
-const setEventListeners = (formElement) => {
-  const inputList = Array.from(formElement.querySelectorAll(".popup__input"));
-  const buttonElement = formElement.querySelector('.popup__button');
-  toggleButtonState(inputList, buttonElement);
+const setEventListeners = (formElement, set) => {
+  const inputList = Array.from(formElement.querySelectorAll(`${set.inputSelector}`));
+  const buttonElement = formElement.querySelector(`${set.submitButtonSelector}`);
+  toggleButtonState(inputList, buttonElement, settingsObject);
 
   inputList.forEach((inputElement) => {
     inputElement.addEventListener("input", () => {
       checkInputValidity(formElement, inputElement);
-      toggleButtonState(inputList, buttonElement);
+      toggleButtonState(inputList, buttonElement, settingsObject);
     });
   });
 };
 
-const enableValidation = () => {
+const enableValidation = (set) => {
   const formList = Array.from(
-    document.querySelectorAll(".popup__form_editProfile")
+    document.querySelectorAll(`${set.formSelector}`)
   );  
   formList.forEach((formElement) => {    
     formElement.addEventListener("submit", function (evt) {
       evt.preventDefault();
     });
-    setEventListeners(formElement);
+    setEventListeners(formElement, settingsObject);
   });
 };
 
@@ -183,31 +187,13 @@ const hasInvalidInput = (inputList) => {
   });
 };
 
-const toggleButtonState = (inputList, buttonElement) => {
+const toggleButtonState = (inputList, buttonElement, set) => {
   if (hasInvalidInput(inputList)) {
-    buttonElement.classList.add("button_disabled");
+    buttonElement.classList.add(`${set.inactiveButtonClass}`);
   } else {
-    buttonElement.classList.remove("button_disabled");
+    buttonElement.classList.remove(`${set.inactiveButtonClass}`);
   }
 };
 
 
-
-enableValidation();
-
-
-
-
-// .popup__form_editProfile
-// .popup__form_newPlace
-// concretePopup
-
-// console.log(secondList.length)
-
-// form.addEventListener("submit", function (evt) {
-//   evt.preventDefault();
-// });
-
-// formInput.addEventListener("input", function () {
-//   checkInputValidity(form, formInput);
-// });
+enableValidation(settingsObject); 
