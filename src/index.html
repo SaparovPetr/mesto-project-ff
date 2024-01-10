@@ -49,22 +49,40 @@
           <button type="button" class="popup__close"></button>
           <h3 class="popup__title">Редактировать профиль</h3>
           
-          <form class="popup__form" name="editProfile">
+          <form class="popup__form popup__form_editProfile" name="editProfile" novalidate>
             <input
               type="text"
               name="name"
-              class="popup__input popup__input_type_name"
+              class="popup__input"
+              id="name-input"
               placeholder="Имя"
               required
+              minlength="2"
+              maxlength="40"
+              pattern="[А-яЁёA-z\-_\s]*"
+              
+              data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"      
             />
+            <span class="popup__input-error name-input-error"></span>
+                  
+            
             <input
               type="text"
               name="description"
-              class="popup__input popup__input_type_description"
+              class="popup__input"
+              id="description-input"
               placeholder="Занятие"
               required
+              minlength="2"
+              maxlength="200"
+              pattern="[А-яЁёA-z\-_\s]*"
+              data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
+              
             />
-            <button type="submit" class="button popup__button">
+            <span class="popup__input-error description-input-error"></span>
+        
+            
+            <button type="submit" class="popup__submit popup__button button">
               Сохранить
             </button>
           </form>
@@ -77,22 +95,35 @@
         <div class="popup__content">
           <button type="button" class="popup__close"></button>
           <h3 class="popup__title">Новое место</h3>
-          <form class="popup__form" name="newPlace">
+          <form class="popup__form popup__form_newPlace" name="newPlace" novalidate>
             <input
               type="text"
               name="placeName"
-              class="popup__input popup__input_type_card-name"
+              id="place-input"
+              class="popup__input"
               placeholder="Название"
               required
+              minlength="2"
+              maxlength="30"
+              pattern="[А-яЁёA-z\-_\s]*"
+              data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
             />
+            <span class="popup__input-error place-input-error"></span>
+          
+
             <input
               type="url"
               name="link"
-              class="popup__input popup__input_type_url"
+              id="link-input"
+              class="popup__input"
               placeholder="Ссылка на картинку"
               required
             />
-            <button type="submit" class="button popup__button">
+            <span class="popup__input-error link-input-error"></span>
+            <!-- Введите адрес сайта. -->
+            
+
+            <button type="submit" class="popup__submit popup__button button">
               Сохранить
             </button>
           </form>
