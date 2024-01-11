@@ -41,6 +41,9 @@ function submitToProfileForm(evt) {
   profileDescription.textContent = jobInput.value;
   formElementForEditProfile.reset();
   closeModal(popupTypeEdit);
+    
+  /////////////////////////////////////////////////////////
+  clearValidation (formElementForEditProfile, validationConfig); 
 }
 
 // обработчик «отправки» формы добавления карточки ↓
@@ -55,7 +58,6 @@ function submitToNewCardForm(evt) {
   closeModal(popupTypeNewCard);
   
   /////////////////////////////////////////////////////////
-  clearValidation (formElementForEditProfile, validationConfig); 
   clearValidation (formElementForCreateCard, validationConfig); 
 }
 

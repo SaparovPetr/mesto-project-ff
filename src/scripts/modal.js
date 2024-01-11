@@ -1,13 +1,10 @@
  import { validationConfig, clearValidation } from "./validation";
- 
  import { formElementForEditProfile, formElementForCreateCard } from "./index";
 
 // функция-обработчик события клика по оверлею ↓
 export function closeByClickOnOverlay (evt) {  
-  if (evt.currentTarget === evt.target) { // "если элемент на который кликнули является самым нижним"
+  if (evt.currentTarget === evt.target) {
     closeModal(document.querySelector('.popup_is-opened'));
-   
-    /////////////////////////////////////////////////////////
     clearValidation (formElementForEditProfile, validationConfig); 
     clearValidation (formElementForCreateCard, validationConfig); 
   }
@@ -31,8 +28,6 @@ export function closeModal(openedPopup) {
 function closeByEscapeKey (event) {
   if (event.key === 'Escape') {    
     closeModal(document.querySelector('.popup_is-opened'));
-
-    /////////////////////////////////////////////////////////
     clearValidation (formElementForEditProfile, validationConfig); 
     clearValidation (formElementForCreateCard, validationConfig); 
   }

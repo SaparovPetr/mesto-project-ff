@@ -76,26 +76,13 @@ function toggleButtonState (inputList, buttonElement, set) {
   }
 };
 
-// Создайте функцию clearValidation, которая очищает ошибки валидации формы 
-// и делает кнопку неактивной. 
-
-// Эта функция должна принимать как параметры DOM-элемент формы,
-// для которой очищаются ошибки валидации и объект с настройками валидации.
- 
-// Используйте функцию clearValidation при заполнении формы 
-// профиля во время её открытия и при очистке формы добавления карточки.
-
-
 export function clearValidation (concreteForm, set) {
-
   concreteForm.querySelectorAll('.popup__input-error').forEach (function (concreteSpan) {
     concreteSpan.classList.remove(`${set.errorClass}`);
   });
-
   concreteForm.querySelectorAll('.popup__input').forEach (function (concreteInput) {
     concreteInput.classList.remove(`${set.inputErrorClass}`);
   });
-
   const currientButton = document.querySelectorAll(`${set.submitButtonSelector}`);
   currientButton.forEach(function (concreteButton) {
     concreteButton.classList.add(`${set.inactiveButtonClass}`);
