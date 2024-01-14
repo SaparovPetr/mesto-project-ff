@@ -1,7 +1,7 @@
 import '../pages/index.css';
-import { initialCards } from './cards';
-import { content, createCard, deleteCard, likeToggle } from './card';
-import { openModal, closeModal, closeByClickOnOverlay } from './modal';
+import { initialCards } from '../cards';
+import { content, createCard, deleteCard, likeToggle } from '../card';
+import { openModal, closeModal, closeByClickOnOverlay } from '../modal';
 
 const placeList = content.querySelector('.places__list')
 const editButton = document.querySelector('.profile__edit-button');

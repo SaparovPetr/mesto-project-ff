@@ -1,7 +1,7 @@
 import "../pages/index.css";
-import { initialCards } from "./cards";
-import { content, createCard, deleteCard, likeToggle } from "./card";
-import { openModal, closeModal, closeByClickOnOverlay } from "./modal";
+import { initialCards } from "../cards";
+import { content, createCard, deleteCard, likeToggle } from "../card";
+import { openModal, closeModal, closeByClickOnOverlay } from "../modal";
 
 const placeList = content.querySelector(".places__list");
 const editButton = document.querySelector(".profile__edit-button");
@@ -112,6 +112,15 @@ formElementForCreateCard.addEventListener("submit", submitToNewCardForm);
 
 
 
+
+
+
+
+
+
+
+// из задания 7-1
+
 const settingsObject = {
   formSelector: '.popup__form',
   inputSelector: '.popup__input',
@@ -123,20 +132,17 @@ const settingsObject = {
 
 
 
-
-
-
-const showInputError = (formElement, inputElement, errorMessage, set) => {
+const showInputError = (formElement, inputElement, errorMessage) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  inputElement.classList.add(`${set.inputErrorClass}`);
+  inputElement.classList.add("popup__input_type_error");
   errorElement.textContent = errorMessage;
-  errorElement.classList.add(`${set.errorClass}`);
+  errorElement.classList.add("popup__input-error_visible");
 };
 
-const hideInputError = (formElement, inputElement, set) => {
+const hideInputError = (formElement, inputElement) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  inputElement.classList.remove(`${set.inputErrorClass}`);
-  errorElement.classList.remove(`${set.errorClass}`);
+  inputElement.classList.remove("popup__input_type_error");
+  errorElement.classList.remove("popup__input-error_visible");
   errorElement.textContent = "";
 };
 
@@ -150,21 +156,21 @@ const checkInputValidity = (formElement, inputElement) => {
   
   
   if (!inputElement.validity.valid) {
-    showInputError(formElement, inputElement, inputElement.validationMessage, settingsObject);
+    showInputError(formElement, inputElement, inputElement.validationMessage);
   } else {
-    hideInputError(formElement, inputElement, settingsObject);
+    hideInputError(formElement, inputElement);
   }
 };
 
-const setEventListeners = (formElement, set) => {
-  const inputList = Array.from(formElement.querySelectorAll(`${set.inputSelector}`));
-  const buttonElement = formElement.querySelector(`${set.submitButtonSelector}`);
-  toggleButtonState(inputList, buttonElement, settingsObject);
+const setEventListeners = (formElement) => {
+  const inputList = Array.from(formElement.querySelectorAll(".popup__input"));
+  const buttonElement = formElement.querySelector('.popup__button');
+  toggleButtonState(inputList, buttonElement);
 
   inputList.forEach((inputElement) => {
     inputElement.addEventListener("input", () => {
       checkInputValidity(formElement, inputElement);
-      toggleButtonState(inputList, buttonElement, settingsObject);
+      toggleButtonState(inputList, buttonElement);
     });
   });
 };
@@ -177,7 +183,7 @@ const enableValidation = (set) => {
     formElement.addEventListener("submit", function (evt) {
       evt.preventDefault();
     });
-    setEventListeners(formElement, settingsObject);
+    setEventListeners(formElement);
   });
 };
 
@@ -187,13 +193,33 @@ const hasInvalidInput = (inputList) => {
   });
 };
 
-const toggleButtonState = (inputList, buttonElement, set) => {
+const toggleButtonState = (inputList, buttonElement) => {
   if (hasInvalidInput(inputList)) {
-    buttonElement.classList.add(`${set.inactiveButtonClass}`);
+    buttonElement.classList.add("button_disabled");
   } else {
-    buttonElement.classList.remove(`${set.inactiveButtonClass}`);
+    buttonElement.classList.remove("button_disabled");
   }
 };
 
 
+
+
+
+
+
 enableValidation(settingsObject); 
+
+
+// .popup__form_editProfile
+// .popup__form_newPlace
+// concretePopup
+
+// console.log(secondList.length)
+
+// form.addEventListener("submit", function (evt) {
+//   evt.preventDefault();
+// });
+
+// formInput.addEventListener("input", function () {
+//   checkInputValidity(form, formInput);
+// });

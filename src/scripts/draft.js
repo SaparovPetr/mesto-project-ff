@@ -1,5 +1,7 @@
+как в этом коде использовать метод promise.all для того, чтобы испльзовать в функции getInitialCards() данные, полученные в фукнции getPersonality()? 
+
+
 import "../pages/index.css";
-// import { initialCards } from "./cards";
 import { content, createCard, deleteCard, likeToggle } from "./card";
 import { openModal, closeModal, closeByClickOnOverlay } from "./modal";
 import { validationConfig, enableValidation, clearValidation } from "./validation";
@@ -25,14 +27,13 @@ const popupImage = document.querySelector(".popup__image");
 const popupCaption = document.querySelector(".popup__caption");
 
 // функция добавления созданного элемента карточки ↓
-function renderCard(objectFromArray, removing, liking, openingImage, likesAmount, mineId) {
+function renderCard(objectFromArray, removing, liking, openingImage, likesAmount) {
   const renderedCardElement = createCard(
     objectFromArray,
     removing,
     liking,
     openingImage,
-    likesAmount,
-    mineId
+    likesAmount
   );
   placeList.prepend(renderedCardElement);
 }
@@ -55,7 +56,7 @@ function submitToNewCardForm(evt) {
     name: plaseTitle.value,
     link: placeLink.value,
   };
-  renderCard(newObj, deleteCard, likeToggle, openImage, likesAmount, mineId);
+  renderCard(newObj, deleteCard, likeToggle, openImage);
   formElementForCreateCard.reset();
   addCardToServer(newObj.name, newObj.link)
   closeModal(popupTypeNewCard);
@@ -139,10 +140,7 @@ const config = {
 
 
 
-
-
-//             Профиль
-///////////////////////////////////   
+///////////////////////////////////   Профиль
 ///////////////////////////////////
 ///////////////////////////////////
 ///////////////////////////////////
@@ -150,20 +148,29 @@ const config = {
 
 // рендеринг профиля
 function getPersonality() {
-  return fetch(`${config.baseUrl}/users/me`, {
+  fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers
   })
-  .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }  
-    return Promise.reject(res.status)
-    })
-  .catch((err) => {
-    console.log(`Ошибка: ${err}`); // вывожу ошибку в консоль - сделать верстку
-  });
-}
   
+  .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }  
+      return Promise.reject(res.status)
+    })
+  
+    .then((objectWithMineProfileData) => {
+      console.log(objectWithMineProfileData);
+      profileTitle.textContent = objectWithMineProfileData.name;
+      profileDescription.textContent = objectWithMineProfileData.about;
+      profileAvatar.src = objectWithMineProfileData.avatar;
+    })
+  
+    .catch((err) => {
+      console.log(`Ошибка: ${err}`); // выводим ошибку в консоль
+    })
+}
+getPersonality();
 
 
 // редактирование профиля
@@ -180,31 +187,48 @@ function patchProfile(newName, newDescription) {
 
 
 
-
-
-//                Карточки
-///////////////////////////////////   
+///////////////////////////////////   Карточки
 ///////////////////////////////////
 ///////////////////////////////////
 ///////////////////////////////////
 ///////////////////////////////////
 
 
-// получение списка карточек
+// список карточек
 function getInitialCards() {
-  return fetch(`${config.baseUrl}/cards`, {
+  fetch(`${config.baseUrl}/cards`, {
       headers: config.headers
   })
+
   .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }  
-    return Promise.reject(res.status)
-    })
+  if (res.ok) {
+    return res.json();
+  }  
+  return Promise.reject(res.status)
+  })
+
+  .then((arrayWithCardsData) => {
+    console.log(arrayWithCardsData);   
+    // выведение карточек с данными из онлайн-массива ↓
+    arrayWithCardsData.forEach(function (item) {           
+    renderCard(item, deleteCard, likeToggle, openImage, item.likes.length);
+    });     
+  })
+
+
   .catch((err) => {
-    console.log(`Ошибка: ${err}`); // вывожу ошибку в консоль - сделать верстку
-  }); 
+  console.log(`Ошибка: ${err}`); // вывожу ошибку в консоль - сделать верстку
+  });
 }
+
+getInitialCards();
+
+
+
+
+
+
+
 
 
 // добавление на сервер собственной карточки ↓
@@ -220,40 +244,51 @@ function addCardToServer(mineName, mineLink) {
 }
 
 
-/// ОСТАНОВИЛСЯ ТУТ: 
 
 
 
-// удаление собственной карточки с сервера ↓
-
-// function removeCardFromServer() {
-//   fetch(`${config.baseUrl}/cards/`, {
-//     method: 'DELETE',
-//     // body: JSON.stringify({
-//     // }),
-//     headers: config.headers
-//   })
-// }
-// https://nomoreparties.co/v1/cohortId/cards/cardId 
 
 
 
-Promise.all([getPersonality(), getInitialCards()])
 
-.then((responseFromBothSources) => {  
-  const objectWithMineProfileData = responseFromBothSources[0];
-  const arrayWithCardsData = responseFromBothSources[1];
-  
-  console.log(objectWithMineProfileData)
-  console.log(arrayWithCardsData)
 
-  profileTitle.textContent = objectWithMineProfileData.name;
-  profileDescription.textContent = objectWithMineProfileData.about;
-  profileAvatar.src = objectWithMineProfileData.avatar;
-  const mineId = objectWithMineProfileData._id
-  // console.log(mineId);
 
-  arrayWithCardsData.forEach(function (item) {           
-    renderCard(item, deleteCard, likeToggle, openImage, item.likes.length, objectWithMineProfileData._id);
-  });
-})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,7 +1,7 @@
 import '../pages/index.css';
-import { initialCards } from './cards';
-import { content, createCard, deleteCard, likeToggle } from './card';
-import { openModal, closeModal, closeByClickOnOverlay } from './modal';
+import { initialCards } from '../cards';
+import { content, createCard, deleteCard, likeToggle } from '../card';
+import { openModal, closeModal, closeByClickOnOverlay } from '../modal';
 
 const placeList = content.querySelector('.places__list')
 const editButton = document.querySelector('.profile__edit-button');
@@ -109,34 +109,29 @@ formElementForCreateCard.addEventListener('submit', submitToNewCardForm);
 
 
 const popupElement = document.querySelector('.popup__form');
-const inputElement = popupElement.querySelector('.popup__input');
+const popupInput = popupElement.querySelector('.popup__input');
+
 // Выбираем элемент ошибки на основе уникального класса 
-// const popupError = popupElement.querySelector(`.${popupInput.id}-error`);
-
-
-
-
+const popupError = popupElement.querySelector(`.${popupInput.id}-error`);
 
 // Функция, которая добавляет класс с ошибкой
-const showInputError = (popupElement, inputElement, errorMessage) => {
-  // Находим элемент ошибки внутри самой функции
-  const errorElement = popupElement.querySelector(`.${inputElement.id}-error`);
-
-  inputElement.classList.add('popup__input_type_error');
+const showInputError = (element, errorMessage) => {
+  element.classList.add('popup__input_type_error');
+ 
   // Заменим содержимое span с ошибкой на переданный параметр
-  errorElement.textContent = errorMessage;
-  errorElement.classList.add('popup__input-error_active');
+  popupError.textContent = errorMessage;
+  popupError.classList.add('popup__input-error_active');
 };
 
 
 // Функция, которая удаляет класс с ошибкой
-const hideInputError = (popupElement, inputElement) => {
-  const errorElement = popupElement.querySelector(`.${inputElement.id}-error`);
-  inputElement.classList.remove('popup__input_type_error');
+const hideInputError = (element) => {
+  element.classList.remove('popup__input_type_error');
     // Скрываем сообщение об ошибке
-  errorElement.classList.remove('popup__input-error_active');
+  popupError.classList.remove('popup__input-error_active');
+
   // Очистим ошибку
-  errorElement.textContent = '';
+  popupError.textContent = '';
 };
 
 
@@ -144,15 +139,15 @@ const hideInputError = (popupElement, inputElement) => {
 
 
 // Функция, которая проверяет валидность поля
-const isValid = (popupElement, inputElement) => {
-  if (!inputElement.validity.valid) {
+const isValid = () => {
+  if (!popupInput.validity.valid) {
     // Если поле не проходит валидацию, покажем ошибку
-    showInputError(popupElement, inputElement, inputElement.validationMessage);
+    showInputError(popupInput, popupInput.validationMessage);
   } else {
     // Если проходит, скроем
-    hideInputError(popupElement, inputElement);
+    hideInputError(popupInput);
   }
 };
 
 // Вызовем функцию isValid на каждый ввод символа
-inputElement.addEventListener('input', isValid); 
+popupInput.addEventListener('input', isValid); 

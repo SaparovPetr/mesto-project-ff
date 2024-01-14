@@ -3,16 +3,21 @@ import { initialCards } from "./cards";
 import { content, createCard, deleteCard, likeToggle } from "./card";
 import { openModal, closeModal, closeByClickOnOverlay } from "./modal";
 
+import { validationConfig, enableValidation, clearValidation } from "./validation";
+
 const placeList = content.querySelector(".places__list");
 const editButton = document.querySelector(".profile__edit-button");
 const addButton = document.querySelector(".profile__add-button");
 const popupTypeEdit = document.querySelector(".popup_type_edit");
 const popupTypeNewCard = document.querySelector(".popup_type_new-card");
 const popupTypeImage = document.querySelector(".popup_type_image");
-const formElementForEditProfile = document.forms.editProfile;
-const formElementForCreateCard = document.forms.newPlace;
+export const formElementForEditProfile = document.forms.editProfile;
+export const formElementForCreateCard = document.forms.newPlace;
+
+const profileAvatar = document.querySelector('.profile__avatar')
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
+
 const nameInput = formElementForEditProfile.elements.name;
 const jobInput = formElementForEditProfile.elements.description;
 const plaseTitle = formElementForCreateCard.elements.placeName;
@@ -37,7 +42,9 @@ function submitToProfileForm(evt) {
   profileTitle.textContent = nameInput.value;
   profileDescription.textContent = jobInput.value;
   formElementForEditProfile.reset();
+  patchProfile(profileTitle.textContent, profileDescription.textContent);
   closeModal(popupTypeEdit);
+  clearValidation (formElementForEditProfile, validationConfig); 
 }
 
 // обработчик «отправки» формы добавления карточки ↓
@@ -49,7 +56,10 @@ function submitToNewCardForm(evt) {
   };
   renderCard(newObj, deleteCard, likeToggle, openImage);
   formElementForCreateCard.reset();
+  ///////
+  addCardToServer(newObj.name, newObj.link)
   closeModal(popupTypeNewCard);
+  clearValidation (formElementForCreateCard, validationConfig); 
 }
 
 // открытие картинки ↓
@@ -60,10 +70,10 @@ function openImage(outLink, outName) {
   openModal(popupTypeImage);
 }
 
-// выведение карточек с данными из массива ↓
-initialCards.forEach(function (item) {
-  renderCard(item, deleteCard, likeToggle, openImage);
-});
+// выведение карточек с данными из офлайн массива ↓
+// initialCards.forEach(function (item) {
+//   renderCard(item, deleteCard, likeToggle, openImage);
+// });
 
 // открытие попапа по кнопке редактирования профиля ↓
 editButton.addEventListener("click", function () {
@@ -81,6 +91,8 @@ addButton.addEventListener("click", function () {
 document.querySelectorAll(".popup__close").forEach(function (concreteButton) {
   concreteButton.addEventListener("click", function () {
     closeModal(document.querySelector(".popup_is-opened"));
+    clearValidation (formElementForEditProfile, validationConfig); 
+    clearValidation (formElementForCreateCard, validationConfig); 
   });
 });
 
@@ -93,6 +105,8 @@ document.querySelectorAll(".popup").forEach(function (concreteOverlay) {
 formElementForEditProfile.addEventListener("submit", submitToProfileForm);
 formElementForCreateCard.addEventListener("submit", submitToNewCardForm);
 
+// вызов кода валидации ↓
+enableValidation(validationConfig); 
 
 
 
@@ -114,100 +128,121 @@ formElementForCreateCard.addEventListener("submit", submitToNewCardForm);
 
 
 
+const config = {
+  baseUrl: 'https://nomoreparties.co/v1/wff-cohort-4',
+  headers: {
+    authorization: '74fac8d8-4ad0-46e7-8b61-ccf40d749a5e',
+    'Content-Type': 'application/json; charset=UTF-8'
+  }
+}
 
-
-
-
-
-// из задания 7-1
-
-
-const showInputError = (formElement, inputElement, errorMessage) => {
-  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  inputElement.classList.add("popup__input_type_error");
-  errorElement.textContent = errorMessage;
-  errorElement.classList.add("popup__input-error_visible");
-};
-
-const hideInputError = (formElement, inputElement) => {
-  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  inputElement.classList.remove("popup__input_type_error");
-  errorElement.classList.remove("popup__input-error_visible");
-  errorElement.textContent = "";
-};
-
-const checkInputValidity = (formElement, inputElement) => {
+// шапка
+function getPersonality() {
+  fetch(`${config.baseUrl}/users/me`, {
+    headers: config.headers
+  })
   
-  if (inputElement.validity.patternMismatch) { 
-    inputElement.setCustomValidity(inputElement.dataset.errorMessage);
-    } else {
-    inputElement.setCustomValidity("");
+  .then((res) => {
+    if (res.ok) {
+      return res.json();
+    }  
+    return Promise.reject(res.status)
+    })
+  
+    .then((result) => {
+      console.log(result);
+      profileTitle.textContent = result.name;
+      profileDescription.textContent = result.about;
+      profileAvatar.src = result.avatar;
+    })
+  
+    .catch((err) => {
+    console.log(`Ошибка: ${err}`); // выводим ошибку в консоль
+    });
+}
+getPersonality();
+
+
+function patchProfile(newName, newDescription) {
+  fetch(`${config.baseUrl}/users/me`, {
+    method: 'PATCH',
+    headers: config.headers,
+    body: JSON.stringify({
+      name: newName,
+      about: newDescription
+    })
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// список карточек
+function getInitialCards() {
+    fetch(`${config.baseUrl}/cards`, {
+      headers: config.headers
+  })
+
+  .then((res) => {
+  if (res.ok) {
+    return res.json();
   }  
-  
-  
-  if (!inputElement.validity.valid) {
-    showInputError(formElement, inputElement, inputElement.validationMessage);
-  } else {
-    hideInputError(formElement, inputElement);
-  }
-};
+  return Promise.reject(res.status)
+  })
 
-const setEventListeners = (formElement) => {
-  const inputList = Array.from(formElement.querySelectorAll(".popup__input"));
-  const buttonElement = formElement.querySelector('.popup__button');
-  toggleButtonState(inputList, buttonElement);
+  .then((arrayWithCards) => {
+    console.log(arrayWithCards);
 
-  inputList.forEach((inputElement) => {
-    inputElement.addEventListener("input", () => {
-      checkInputValidity(formElement, inputElement);
-      toggleButtonState(inputList, buttonElement);
-    });
+    // arrayWithCards.forEach(function (item) {
+    //   console.log(item._id);
+
+    //   document.querySelector('.card__delete-button')
+    // })
+      
+    
+    
+    // выведение карточек с данными из онлайн-массива ↓
+    arrayWithCards.forEach(function (item) {
+        renderCard(item, deleteCard, likeToggle, openImage);
+      });
+  })
+
+  .catch((err) => {
+  console.log(`Ошибка: ${err}`); // выводим ошибку в консоль
   });
-};
+}
 
-const enableValidation = () => {
-  const formList = Array.from(
-    document.querySelectorAll(".popup__form_editProfile")
-  );  
-  formList.forEach((formElement) => {    
-    formElement.addEventListener("submit", function (evt) {
-      evt.preventDefault();
-    });
-    setEventListeners(formElement);
-  });
-};
-
-const hasInvalidInput = (inputList) => {
-  return inputList.some((inputElement) => {
-    return !inputElement.validity.valid;
-  });
-};
-
-const toggleButtonState = (inputList, buttonElement) => {
-  if (hasInvalidInput(inputList)) {
-    buttonElement.classList.add("button_disabled");
-  } else {
-    buttonElement.classList.remove("button_disabled");
-  }
-};
+getInitialCards();
 
 
 
-enableValidation();
+// добавление на сервер собственной карточки ↓
+function addCardToServer(mineName, mineLink) {
+  fetch(`${config.baseUrl}/cards`, {
+    method: 'POST',
+    body: JSON.stringify({
+      name: mineName,
+      link: mineLink
+    }),
+    headers: config.headers
+  })
+}
 
 
 
 
-// .popup__form_editProfile
-// .popup__form_newPlace
-// concretePopup
 
-// console.log(secondList.length)
 
-// form.addEventListener("submit", function (evt) {
-//   evt.preventDefault();
-// });
-
-// formInput.addEventListener("input", function () {
-//   checkInputValidity(form, formInput);
-// });

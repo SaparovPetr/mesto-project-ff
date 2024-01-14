@@ -1,7 +1,7 @@
 import '../pages/index.css';
-import { initialCards } from './cards';
-import { content, createCard, deleteCard, likeToggle } from './card';
-import { openModal, closeModal, closeByClickOnOverlay } from './modal';
+import { initialCards } from '../cards';
+import { content, createCard, deleteCard, likeToggle } from '../card';
+import { openModal, closeModal, closeByClickOnOverlay } from '../modal';
 
 const placeList = content.querySelector('.places__list')
 const editButton = document.querySelector('.profile__edit-button');
@@ -107,47 +107,38 @@ formElementForCreateCard.addEventListener('submit', submitToNewCardForm);
 
 
 
+const form = document.querySelector('.popup__form');
+const formInput = form.querySelector('popup__input');
+// const errorElement = form.querySelector(`.${formInput.id}-error`);
 
-const popupElement = document.querySelector('.popup__form');
-const popupInput = popupElement.querySelector('.popup__input');
-
-// Выбираем элемент ошибки на основе уникального класса 
-const popupError = popupElement.querySelector(`.${popupInput.id}-error`);
-
-// Функция, которая добавляет класс с ошибкой
-const showInputError = (element, errorMessage) => {
-  element.classList.add('popup__input_type_error');
- 
-  // Заменим содержимое span с ошибкой на переданный параметр
-  popupError.textContent = errorMessage;
-  popupError.classList.add('popup__input-error_active');
+const showInputError = (formElement, inputElement, errorMessage) => {
+  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+  inputElement.classList.add('popup__input_type_error');
+  errorElement.textContent = errorMessage;
+  errorElement.classList.add('popup__input-error_active');
 };
 
 
-// Функция, которая удаляет класс с ошибкой
-const hideInputError = (element) => {
-  element.classList.remove('popup__input_type_error');
-    // Скрываем сообщение об ошибке
-  popupError.classList.remove('popup__input-error_active');
-
-  // Очистим ошибку
-  popupError.textContent = '';
+const hideInputError = (formElement, inputElement) => {
+  const  errorElement = formElement.querySelector(`.${formInput.id}-error`);
+  inputElement.classList.remove('popup__input_type_error');
+  errorElement.classList.remove('popup__input-error_active');
+  errorElement.textContent = '';
 };
 
-
-
-
-
-// Функция, которая проверяет валидность поля
-const isValid = () => {
-  if (!popupInput.validity.valid) {
-    // Если поле не проходит валидацию, покажем ошибку
-    showInputError(popupInput, popupInput.validationMessage);
+const checkInputValidity = () => {
+  if (!formInput.validity.valid) {
+    showInputError(form, formInput, formInput.validationMessage);
   } else {
-    // Если проходит, скроем
-    hideInputError(popupInput);
+    hideInputError(form, formInput);
   }
 };
 
-// Вызовем функцию isValid на каждый ввод символа
-popupInput.addEventListener('input', isValid); 
+// form.addEventListener('submit', function (evt) {
+//   evt.preventDefault();
+// });
+
+ 
+formInput.addEventListener('input', function () {
+  checkInputValidity();
+});

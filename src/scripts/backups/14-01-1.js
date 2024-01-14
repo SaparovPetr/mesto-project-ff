@@ -25,14 +25,13 @@ const popupImage = document.querySelector(".popup__image");
 const popupCaption = document.querySelector(".popup__caption");
 
 // функция добавления созданного элемента карточки ↓
-function renderCard(objectFromArray, removing, liking, openingImage, likesAmount, mineId) {
+function renderCard(objectFromArray, removing, liking, openingImage, likesAmount) {
   const renderedCardElement = createCard(
     objectFromArray,
     removing,
     liking,
     openingImage,
-    likesAmount,
-    mineId
+    likesAmount
   );
   placeList.prepend(renderedCardElement);
 }
@@ -55,7 +54,7 @@ function submitToNewCardForm(evt) {
     name: plaseTitle.value,
     link: placeLink.value,
   };
-  renderCard(newObj, deleteCard, likeToggle, openImage, likesAmount, mineId);
+  renderCard(newObj, deleteCard, likeToggle, openImage);
   formElementForCreateCard.reset();
   addCardToServer(newObj.name, newObj.link)
   closeModal(popupTypeNewCard);
@@ -150,20 +149,31 @@ const config = {
 
 // рендеринг профиля
 function getPersonality() {
-  return fetch(`${config.baseUrl}/users/me`, {
+  fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers
   })
-  .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }  
-    return Promise.reject(res.status)
-    })
-  .catch((err) => {
-    console.log(`Ошибка: ${err}`); // вывожу ошибку в консоль - сделать верстку
-  });
-}
   
+  .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }  
+      return Promise.reject(res.status)
+    })
+  
+    .then((objectWithMineProfileData) => {
+      // console.log(objectWithMineProfileData);
+      profileTitle.textContent = objectWithMineProfileData.name;
+      profileDescription.textContent = objectWithMineProfileData.about;
+      profileAvatar.src = objectWithMineProfileData.avatar;
+    })
+  
+    .catch((err) => {
+      console.log(`Ошибка: ${err}`); // выводим ошибку в консоль
+    })
+}
+
+
+
 
 
 // редактирование профиля
@@ -190,21 +200,56 @@ function patchProfile(newName, newDescription) {
 ///////////////////////////////////
 
 
-// получение списка карточек
+// список карточек
 function getInitialCards() {
-  return fetch(`${config.baseUrl}/cards`, {
+  fetch(`${config.baseUrl}/cards`, {
       headers: config.headers
   })
+
   .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }  
-    return Promise.reject(res.status)
-    })
+  if (res.ok) {
+    return res.json();
+  }  
+  return Promise.reject(res.status)
+  })
+
+  .then((arrayWithCardsData) => {
+    console.log(arrayWithCardsData);   
+    // выведение карточек с данными из онлайн-массива ↓
+    arrayWithCardsData.forEach(function (item) {           
+    renderCard(item, deleteCard, likeToggle, openImage, item.likes.length);
+    });
+  
+  
+    // arrayWithCardsData.forEach(function (item) {           
+    //   if (item.owner.name !== profileTitle.textContent) {
+    //   //   console.log("не моя");
+    //     document.querySelectorAll('.card__delete-button').forEach(function (item) {           
+    //       item.classList.add('card__delete-button_hidden'); 
+    //     })
+    //    } else {
+    //     document.querySelectorAll('.card__delete-button').forEach(function (item) {           
+    //       item.classList.remove('card__delete-button_hidden'); 
+    //     })
+    //     // console.log("моя");
+    //   }
+    // });
+  })
+
+
+
+
   .catch((err) => {
     console.log(`Ошибка: ${err}`); // вывожу ошибку в консоль - сделать верстку
-  }); 
+  });
 }
+
+
+
+
+
+
+
 
 
 // добавление на сервер собственной карточки ↓
@@ -220,40 +265,23 @@ function addCardToServer(mineName, mineLink) {
 }
 
 
-/// ОСТАНОВИЛСЯ ТУТ: 
 
-
-
-// удаление собственной карточки с сервера ↓
-
-// function removeCardFromServer() {
-//   fetch(`${config.baseUrl}/cards/`, {
-//     method: 'DELETE',
-//     // body: JSON.stringify({
-//     // }),
-//     headers: config.headers
-//   })
-// }
-// https://nomoreparties.co/v1/cohortId/cards/cardId 
 
 
 
 Promise.all([getPersonality(), getInitialCards()])
+.then((results) => {
 
-.then((responseFromBothSources) => {  
-  const objectWithMineProfileData = responseFromBothSources[0];
-  const arrayWithCardsData = responseFromBothSources[1];
+
+
+  const [personality, cards] = results;
   
-  console.log(objectWithMineProfileData)
-  console.log(arrayWithCardsData)
+ 
+  
+  console.log(results)
 
-  profileTitle.textContent = objectWithMineProfileData.name;
-  profileDescription.textContent = objectWithMineProfileData.about;
-  profileAvatar.src = objectWithMineProfileData.avatar;
-  const mineId = objectWithMineProfileData._id
-  // console.log(mineId);
 
-  arrayWithCardsData.forEach(function (item) {           
-    renderCard(item, deleteCard, likeToggle, openImage, item.likes.length, objectWithMineProfileData._id);
-  });
+
+
+  
 })

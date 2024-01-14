@@ -1,7 +1,7 @@
 import '../pages/index.css';
-import { initialCards } from './cards';
-import { content, createCard, deleteCard, likeToggle } from './card';
-import { openModal, closeModal, closeByClickOnOverlay } from './modal';
+import { initialCards } from '../cards';
+import { content, createCard, deleteCard, likeToggle } from '../card';
+import { openModal, closeModal, closeByClickOnOverlay } from '../modal';
 
 const placeList = content.querySelector('.places__list')
 const editButton = document.querySelector('.profile__edit-button');
@@ -107,38 +107,52 @@ formElementForCreateCard.addEventListener('submit', submitToNewCardForm);
 
 
 
-const form = document.querySelector('.popup__form');
-const formInput = form.querySelector('popup__input');
-// const errorElement = form.querySelector(`.${formInput.id}-error`);
 
-const showInputError = (formElement, inputElement, errorMessage) => {
-  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+const popupElement = document.querySelector('.popup__form');
+const inputElement = popupElement.querySelector('.popup__input');
+// Выбираем элемент ошибки на основе уникального класса 
+// const popupError = popupElement.querySelector(`.${popupInput.id}-error`);
+
+
+
+
+
+// Функция, которая добавляет класс с ошибкой
+const showInputError = (popupElement, inputElement, errorMessage) => {
+  // Находим элемент ошибки внутри самой функции
+  const errorElement = popupElement.querySelector(`.${inputElement.id}-error`);
+
   inputElement.classList.add('popup__input_type_error');
+  // Заменим содержимое span с ошибкой на переданный параметр
   errorElement.textContent = errorMessage;
   errorElement.classList.add('popup__input-error_active');
 };
 
 
-const hideInputError = (formElement, inputElement) => {
-  const  errorElement = formElement.querySelector(`.${formInput.id}-error`);
+// Функция, которая удаляет класс с ошибкой
+const hideInputError = (popupElement, inputElement) => {
+  const errorElement = popupElement.querySelector(`.${inputElement.id}-error`);
   inputElement.classList.remove('popup__input_type_error');
+    // Скрываем сообщение об ошибке
   errorElement.classList.remove('popup__input-error_active');
+  // Очистим ошибку
   errorElement.textContent = '';
 };
 
-const checkInputValidity = () => {
-  if (!formInput.validity.valid) {
-    showInputError(form, formInput, formInput.validationMessage);
+
+
+
+
+// Функция, которая проверяет валидность поля
+const isValid = (popupElement, inputElement) => {
+  if (!inputElement.validity.valid) {
+    // Если поле не проходит валидацию, покажем ошибку
+    showInputError(popupElement, inputElement, inputElement.validationMessage);
   } else {
-    hideInputError(form, formInput);
+    // Если проходит, скроем
+    hideInputError(popupElement, inputElement);
   }
 };
 
-// form.addEventListener('submit', function (evt) {
-//   evt.preventDefault();
-// });
-
- 
-formInput.addEventListener('input', function () {
-  checkInputValidity();
-});
+// Вызовем функцию isValid на каждый ввод символа
+inputElement.addEventListener('input', isValid); 

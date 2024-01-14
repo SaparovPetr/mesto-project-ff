@@ -1,7 +1,7 @@
 import "../pages/index.css";
-import { initialCards } from "./cards";
-import { content, createCard, deleteCard, likeToggle } from "./card";
-import { openModal, closeModal, closeByClickOnOverlay } from "./modal";
+import { initialCards } from "../cards";
+import { content, createCard, deleteCard, likeToggle } from "../card";
+import { openModal, closeModal, closeByClickOnOverlay } from "../modal";
 
 const placeList = content.querySelector(".places__list");
 const editButton = document.querySelector(".profile__edit-button");
@@ -112,15 +112,6 @@ formElementForCreateCard.addEventListener("submit", submitToNewCardForm);
 
 
 
-
-
-
-
-
-
-
-// проблемная
-
 const settingsObject = {
   formSelector: '.popup__form',
   inputSelector: '.popup__input',
@@ -139,13 +130,13 @@ const showInputError = (formElement, inputElement, errorMessage, set) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   inputElement.classList.add(`${set.inputErrorClass}`);
   errorElement.textContent = errorMessage;
-  errorElement.classList.add(`.${set.errorClass}`);
+  errorElement.classList.add(`${set.errorClass}`);
 };
 
 const hideInputError = (formElement, inputElement, set) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   inputElement.classList.remove(`${set.inputErrorClass}`);
-  errorElement.classList.remove(`.${set.errorClass}`);
+  errorElement.classList.remove(`${set.errorClass}`);
   errorElement.textContent = "";
 };
 
@@ -161,7 +152,7 @@ const checkInputValidity = (formElement, inputElement) => {
   if (!inputElement.validity.valid) {
     showInputError(formElement, inputElement, inputElement.validationMessage, settingsObject);
   } else {
-    hideInputError(formElement, inputElement);
+    hideInputError(formElement, inputElement, settingsObject);
   }
 };
 
@@ -205,24 +196,4 @@ const toggleButtonState = (inputList, buttonElement, set) => {
 };
 
 
-
-
-
-
-
 enableValidation(settingsObject); 
-
-
-// .popup__form_editProfile
-// .popup__form_newPlace
-// concretePopup
-
-// console.log(secondList.length)
-
-// form.addEventListener("submit", function (evt) {
-//   evt.preventDefault();
-// });
-
-// formInput.addEventListener("input", function () {
-//   checkInputValidity(form, formInput);
-// });
