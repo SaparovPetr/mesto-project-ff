@@ -218,13 +218,7 @@ function addCardToServer(mineName, mineLink) {
   })
 }
 
-// удаление собственной карточки с сервера ↓
-function removeCardFromServer(concreteCardId) {
-  fetch(`${config.baseUrl}/cards/${concreteCardId}`, {
-    method: 'DELETE',
-    headers: config.headers
-  })
-}
+
 
 
 
@@ -247,69 +241,50 @@ Promise.all([getPersonality(), getInitialCards()])
   profileTitle.textContent = objectWithMineProfileData.name;
   profileDescription.textContent = objectWithMineProfileData.about;
   profileAvatar.src = objectWithMineProfileData.avatar;
+  // const mineId = objectWithMineProfileData._id
+  // console.log(mineId);
 
   arrayWithCardsData.forEach(function (item) {           
     renderCard(item, deleteCard, likeToggle, openImage, item.likes.length, objectWithMineProfileData._id, item._id);
     hideTheTrashButton (item.owner._id, objectWithMineProfileData._id);
     document.querySelector('.card__delete-button').addEventListener('click', () => removeCardFromServer(item._id));
 
-    document.querySelector('.card__like-button').addEventListener('click', function () {
-      sendLikeToServer(item._id);  
-    })   
+    // document.querySelector('.card__like-button').addEventListener('click', () => makeTheLike(item._id));
+    // document.querySelector('.card__like-button_is-active').addEventListener('click', () => removeTheLike(item._id));
+
     
-    item.likes.forEach(function (authorOfObj) {
-      if (authorOfObj._id === objectWithMineProfileData._id) {
-        document.querySelector('.card__like-button').classList.add('card__like-button_is-active')
-      }
-    })
     
-    document.querySelectorAll('.card__like-button_is-active').forEach(function (heart) {
-      heart.addEventListener('click', function () {
-        deleteLikeFromServer(item._id); 
-      })
-    })
 
-   
-
-
-
-
-
+  
+    // console.log(item._id);
+    // console.log(item.owner)
+    // console.log(item)
   });
 })
 
-// if (document.querySelector('.card__like-button').classList.contains('card__like-button_is-active')) {
-//   document.querySelector('.card__like-button').addEventListener('click', function () {
-//     document.querySelector('.card__like-counter').textContent = likesAmount - 1;
-//     })
-//   }
 
 
-// cardElement.querySelector('.card__like-button_is-active').addEventListener('click', () => reduceLikesAmount(cardElement, likesAmount));
-
-// // ф уменьшения количества лайков
-// function reduceLikesAmount (cardElement, likesAmount) {
-//   cardElement.querySelector('.card__like-counter').textContent = likesAmount - 1;
-// }
-
-
-
-
-
-// ф отправки лайка на сервер
-function sendLikeToServer(concreteCardId) {
-  fetch(`${config.baseUrl}/cards/likes/${concreteCardId}`, {
-    method: 'PUT',
-    headers: config.headers
-  })
-}
-
-// ф удаления лайка с сервера
-function deleteLikeFromServer(concreteCardId) {
-  fetch(`${config.baseUrl}/cards/likes/${concreteCardId}`, {
+// удаление собственной карточки с сервера ↓
+function removeCardFromServer(concreteCardId) {
+  fetch(`${config.baseUrl}/cards/${concreteCardId}`, {
     method: 'DELETE',
     headers: config.headers
   })
 }
 
 
+// // установка лайка 
+// function makeTheLike(concreteCardId) {
+//   fetch(`${config.baseUrl}/cards/likes/${concreteCardId}`, {
+//     method: 'PUT',
+//     headers: config.headers
+//   })
+// }
+
+// // снятие лайка 
+// function removeTheLike(concreteCardId) {
+//   fetch(`${config.baseUrl}/cards/likes/${concreteCardId}`, {
+//     method: 'DELETE',
+//     headers: config.headers
+//   })
+// }

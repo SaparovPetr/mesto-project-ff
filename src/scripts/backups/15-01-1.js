@@ -1,8 +1,8 @@
 import "../pages/index.css";
 // import { initialCards } from "./cards";
-import { content, createCard, deleteCard, likeToggle, hideTheTrashButton } from "./card";
-import { openModal, closeModal, closeByClickOnOverlay } from "./modal";
-import { validationConfig, enableValidation, clearValidation } from "./validation";
+import { content, createCard, deleteCard, likeToggle } from "../card";
+import { openModal, closeModal, closeByClickOnOverlay } from "../modal";
+import { validationConfig, enableValidation, clearValidation } from "../validation";
 
 const placeList = content.querySelector(".places__list");
 const editButton = document.querySelector(".profile__edit-button");
@@ -31,7 +31,7 @@ function renderCard(objectFromArray, removing, liking, openingImage, likesAmount
     removing,
     liking,
     openingImage,
-    likesAmount
+    likesAmount,
   );
   placeList.prepend(renderedCardElement);
 }
@@ -54,7 +54,7 @@ function submitToNewCardForm(evt) {
     name: plaseTitle.value,
     link: placeLink.value,
   };
-  renderCard(newObj, deleteCard, likeToggle, openImage, 0);
+  renderCard(newObj, deleteCard, likeToggle, openImage, likesAmount);
   formElementForCreateCard.reset();
   addCardToServer(newObj.name, newObj.link)
   closeModal(popupTypeNewCard);
@@ -218,20 +218,23 @@ function addCardToServer(mineName, mineLink) {
   })
 }
 
+
+/// ОСТАНОВИЛСЯ ТУТ: 
+
+
+
 // удаление собственной карточки с сервера ↓
-function removeCardFromServer(concreteCardId) {
-  fetch(`${config.baseUrl}/cards/${concreteCardId}`, {
-    method: 'DELETE',
-    headers: config.headers
-  })
-}
 
+// function removeCardFromServer(concreteCardsId) {
+//   fetch(`${config.baseUrl}/cards/${concreteCardsId}`, {
+//     method: 'DELETE',
+//     headers: config.headers
+//   })
+// }
+// // https://nomoreparties.co/v1/cohortId/cards/cardId 
 
-
-
-
-
-
+// removeCardFromServer(`65a2985cd83b216423ee6286`)
+// 65a2985cd83b216423ee6286
 
 
 
@@ -247,69 +250,11 @@ Promise.all([getPersonality(), getInitialCards()])
   profileTitle.textContent = objectWithMineProfileData.name;
   profileDescription.textContent = objectWithMineProfileData.about;
   profileAvatar.src = objectWithMineProfileData.avatar;
+  // const mineId = objectWithMineProfileData._id
+  // console.log(mineId);
 
   arrayWithCardsData.forEach(function (item) {           
-    renderCard(item, deleteCard, likeToggle, openImage, item.likes.length, objectWithMineProfileData._id, item._id);
-    hideTheTrashButton (item.owner._id, objectWithMineProfileData._id);
-    document.querySelector('.card__delete-button').addEventListener('click', () => removeCardFromServer(item._id));
-
-    document.querySelector('.card__like-button').addEventListener('click', function () {
-      sendLikeToServer(item._id);  
-    })   
-    
-    item.likes.forEach(function (authorOfObj) {
-      if (authorOfObj._id === objectWithMineProfileData._id) {
-        document.querySelector('.card__like-button').classList.add('card__like-button_is-active')
-      }
-    })
-    
-    document.querySelectorAll('.card__like-button_is-active').forEach(function (heart) {
-      heart.addEventListener('click', function () {
-        deleteLikeFromServer(item._id); 
-      })
-    })
-
-   
-
-
-
-
-
+    renderCard(item, deleteCard, likeToggle, openImage, item.likes.length);
   });
 })
-
-// if (document.querySelector('.card__like-button').classList.contains('card__like-button_is-active')) {
-//   document.querySelector('.card__like-button').addEventListener('click', function () {
-//     document.querySelector('.card__like-counter').textContent = likesAmount - 1;
-//     })
-//   }
-
-
-// cardElement.querySelector('.card__like-button_is-active').addEventListener('click', () => reduceLikesAmount(cardElement, likesAmount));
-
-// // ф уменьшения количества лайков
-// function reduceLikesAmount (cardElement, likesAmount) {
-//   cardElement.querySelector('.card__like-counter').textContent = likesAmount - 1;
-// }
-
-
-
-
-
-// ф отправки лайка на сервер
-function sendLikeToServer(concreteCardId) {
-  fetch(`${config.baseUrl}/cards/likes/${concreteCardId}`, {
-    method: 'PUT',
-    headers: config.headers
-  })
-}
-
-// ф удаления лайка с сервера
-function deleteLikeFromServer(concreteCardId) {
-  fetch(`${config.baseUrl}/cards/likes/${concreteCardId}`, {
-    method: 'DELETE',
-    headers: config.headers
-  })
-}
-
 

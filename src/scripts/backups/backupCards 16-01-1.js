@@ -10,8 +10,33 @@ const cardTemplate = document.querySelector('#card-template').content;
   cardElement.querySelector('.card__delete-button').addEventListener('click', () => removing(cardElement));
   cardElement.querySelector('.card__like-button').addEventListener('click', liking);
   cardElement.querySelector('.card__like-counter').textContent = likesAmount;
-    cardElement.querySelector('.card__like-button').addEventListener('click', () => toggleLikesAmount (cardElement, likesAmount));
-  cardElement.querySelector('.card__image').addEventListener('click', () => openingImage(outObject.link, outObject.name));
+  
+  
+  
+  
+  
+  
+  cardElement.querySelector('.card__like-button').addEventListener('click', () => increaseLikesAmount(cardElement, likesAmount));
+    // cardElement.querySelector('.card__like-button_is-active').addEventListener('click', function () {
+  //   cardElement.querySelector('.card__like-counter').textContent = likesAmount - 1;
+  // })
+
+  // cardElement.querySelector('.card__like-button_is-active').addEventListener('click', function () {
+  //     cardElement.querySelector('.card__like-counter').textContent = likesAmount - 1;
+  //   })
+
+  // if (cardElement.querySelector('.card__like-button').classList.contains('card__like-button_is-active')) {
+  //   cardElement.querySelector('.card__like-button').addEventListener('click', function () {
+  //     cardElement.querySelector('.card__like-counter').textContent = likesAmount - 1;
+  //   })
+  // }
+
+
+  
+
+
+  
+  cardElement.querySelector('.card__image').addEventListener ('click', () => openingImage(outObject.link, outObject.name));
   return cardElement;
 }
 
@@ -34,11 +59,25 @@ export function hideTheTrashButton (ownerId, mineId) {
   }
 }
 
-// ф переключения количества лайков
-function toggleLikesAmount (cardElement, likesAmount) {
-  if (cardElement.querySelector('.card__like-button').classList.contains('card__like-button_is-active') === false) {
-    cardElement.querySelector('.card__like-counter').textContent = likesAmount - 1;
-  } else {
-    cardElement.querySelector('.card__like-counter').textContent = likesAmount + 1;
-  }
+
+
+
+
+// ф увеличения количества лайков
+function increaseLikesAmount (cardElement, likesAmount) {
+  cardElement.querySelector('.card__like-counter').textContent = likesAmount + 1;
 }
+
+// ф уменьшения количества лайков
+// function reduceLikesAmount (cardElement, likesAmount) {
+//   cardElement.querySelector('.card__like-counter').textContent = likesAmount - 1;
+// }
+
+
+
+
+
+
+
+
+

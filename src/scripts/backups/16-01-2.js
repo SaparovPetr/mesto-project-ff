@@ -263,35 +263,14 @@ Promise.all([getPersonality(), getInitialCards()])
       }
     })
     
-    document.querySelectorAll('.card__like-button_is-active').forEach(function (heart) {
+    document.querySelectorAll('.card__like-button_is-active').forEach(function (heart) {    
       heart.addEventListener('click', function () {
-        deleteLikeFromServer(item._id); 
+        deleteLikeFromServer(item._id);  
       })
     })
 
-   
-
-
-
-
-
   });
 })
-
-// if (document.querySelector('.card__like-button').classList.contains('card__like-button_is-active')) {
-//   document.querySelector('.card__like-button').addEventListener('click', function () {
-//     document.querySelector('.card__like-counter').textContent = likesAmount - 1;
-//     })
-//   }
-
-
-// cardElement.querySelector('.card__like-button_is-active').addEventListener('click', () => reduceLikesAmount(cardElement, likesAmount));
-
-// // ф уменьшения количества лайков
-// function reduceLikesAmount (cardElement, likesAmount) {
-//   cardElement.querySelector('.card__like-counter').textContent = likesAmount - 1;
-// }
-
 
 
 
@@ -311,5 +290,10 @@ function deleteLikeFromServer(concreteCardId) {
     headers: config.headers
   })
 }
+
+
+
+
+
 
 
