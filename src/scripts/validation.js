@@ -1,6 +1,4 @@
-
-
-export const validationConfig = {
+const validationConfig = {
   formSelector: '.popup__form',
   inputSelector: '.popup__input',
   submitButtonSelector: '.popup__button',
@@ -14,14 +12,14 @@ function showInputError (formElement, inputElement, errorMessage, set) {
   inputElement.classList.add(`${set.inputErrorClass}`);
   errorElement.textContent = errorMessage;
   errorElement.classList.add(`${set.errorClass}`);
-};
+}
 
 function hideInputError (formElement, inputElement, set) {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   inputElement.classList.remove(`${set.inputErrorClass}`);
   errorElement.classList.remove(`${set.errorClass}`);
   errorElement.textContent = "";
-};
+}
 
 function checkInputValidity (formElement, inputElement) {
   if (inputElement.validity.patternMismatch) { 
@@ -35,22 +33,21 @@ function checkInputValidity (formElement, inputElement) {
   } else {
     hideInputError(formElement, inputElement, validationConfig);
   }
-};
+}
 
 function setEventListeners (formElement, set) {
   const inputList = Array.from(formElement.querySelectorAll(`${set.inputSelector}`));
   const buttonElement = formElement.querySelector(`${set.submitButtonSelector}`);
   toggleButtonState(inputList, buttonElement, validationConfig);
-
   inputList.forEach((inputElement) => {
     inputElement.addEventListener("input", () => {
       checkInputValidity(formElement, inputElement);
       toggleButtonState(inputList, buttonElement, validationConfig);
     });
   });
-};
+}
 
-export function enableValidation (set) {
+function enableValidation (set) {
   const formList = Array.from(
     document.querySelectorAll(`${set.formSelector}`)
   );  
@@ -60,13 +57,13 @@ export function enableValidation (set) {
     });
     setEventListeners(formElement, validationConfig);
   });
-};
+}
 
 function hasInvalidInput (inputList) {
   return inputList.some((inputElement) => {
     return !inputElement.validity.valid;
   });
-};
+}
 
 function toggleButtonState (inputList, buttonElement, set) {
   if (hasInvalidInput(inputList)) {
@@ -74,9 +71,9 @@ function toggleButtonState (inputList, buttonElement, set) {
   } else {
     buttonElement.classList.remove(`${set.inactiveButtonClass}`);
   }
-};
+}
 
-export function clearValidation (concreteForm, set) {
+function clearValidation (concreteForm, set) {
   concreteForm.querySelectorAll('.popup__input-error').forEach (function (concreteSpan) {
     concreteSpan.classList.remove(`${set.errorClass}`);
   });
@@ -88,3 +85,9 @@ export function clearValidation (concreteForm, set) {
     concreteButton.classList.add(`${set.inactiveButtonClass}`);
   });
 }
+
+export { 
+  validationConfig, 
+  enableValidation, 
+  clearValidation 
+};

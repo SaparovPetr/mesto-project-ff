@@ -1,23 +1,20 @@
- import { validationConfig, clearValidation } from "./validation";
- import { formElementForEditProfile, formElementForCreateCard, formElementForChangeAvatar } from "./index";
-
-
-
+import { validationConfig, clearValidation } from "./validation";
+import { formElementForEditProfile, formElementForCreateCard, formElementForChangeAvatar } from "./index";
 
 // функция открытия модального окна ↓
-export function openModal(tengiblePopup) {
+function openModal(tengiblePopup) {
   tengiblePopup.classList.add('popup_is-opened');
   document.addEventListener('keydown', closeByEscapeKey);
 }
 
 // функция закрытия модального окна ↓ 
-export function closeModal(openedPopup) {
+function closeModal(openedPopup) {
   openedPopup.classList.remove('popup_is-opened');
   document.removeEventListener('keydown', closeByEscapeKey);  
 }
 
 // функция-обработчик события клика по оверлею ↓
-export function closeByClickOnOverlay (evt) {  
+function closeByClickOnOverlay (evt) {  
   if (evt.currentTarget === evt.target) {
     closeModal(document.querySelector('.popup_is-opened'));
     clearValidation (formElementForEditProfile, validationConfig); 
@@ -25,7 +22,6 @@ export function closeByClickOnOverlay (evt) {
     clearValidation (formElementForChangeAvatar, validationConfig); 
   }
 }
-
 
 // функция-обработчик события нажатия Esc ↓
 function closeByEscapeKey (event) {
@@ -37,3 +33,22 @@ function closeByEscapeKey (event) {
   }
 }
 
+// функция демонстрирования лодера ↓
+function renderLoading (isLoading) {
+  if (isLoading) {
+    document.querySelectorAll('.popup__button').forEach(function (eachSubmitButton) {
+      eachSubmitButton.textContent = 'Сохранение...';
+    })
+  } else {    
+    document.querySelectorAll('.popup__button').forEach(function (eachSubmitButton) {
+      eachSubmitButton.textContent = 'Сохранить';
+    })
+  }
+}
+
+export { 
+  openModal, 
+  closeModal, 
+  closeByClickOnOverlay, 
+  renderLoading 
+};

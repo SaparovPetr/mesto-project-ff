@@ -2,9 +2,9 @@
 
 
 import "../pages/index.css";
-import { content, createCard, deleteCard, likeToggle } from "./card";
-import { openModal, closeModal, closeByClickOnOverlay } from "./modal";
-import { validationConfig, enableValidation, clearValidation } from "./validation";
+import { content, createCard, deleteCard, likeToggle } from "../card";
+import { openModal, closeModal, closeByClickOnOverlay } from "../modal";
+import { validationConfig, enableValidation, clearValidation } from "../validation";
 
 const placeList = content.querySelector(".places__list");
 const editButton = document.querySelector(".profile__edit-button");
