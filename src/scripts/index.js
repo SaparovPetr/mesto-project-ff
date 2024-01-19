@@ -13,6 +13,7 @@ import {
   sendNewAvatarToServer
 } from "./api";
 
+
 const placeList = content.querySelector(".places__list");
 const editButton = document.querySelector(".profile__edit-button");
 const addButton = document.querySelector(".profile__add-button");
@@ -166,7 +167,7 @@ Promise.all([
       }
     })
 
-    //  слушатель иконки корзины для удаления с сервера ↓
+    //  слушатель клика иконки корзины для удаления с сервера ↓
     cardEl.querySelector('.card__delete-button').addEventListener('click', () => removeCardFromServer(item._id));
    
     //  слушатель переключения лайка ↓
