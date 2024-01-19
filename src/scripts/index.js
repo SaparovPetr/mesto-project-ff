@@ -13,7 +13,6 @@ import {
   sendNewAvatarToServer
 } from "./api";
 
-
 const placeList = content.querySelector(".places__list");
 const editButton = document.querySelector(".profile__edit-button");
 const addButton = document.querySelector(".profile__add-button");
@@ -137,7 +136,7 @@ formElementForChangeAvatar.addEventListener("submit", submitToAvatarForm);
 // запуск валидации ↓
 enableValidation(validationConfig); 
 
-// запуск асинхронного кода из api ↓
+// запуск асинхронного кода ↓
 Promise.all([
   getPersonality(), 
   getInitialCards(),
@@ -146,29 +145,44 @@ Promise.all([
 .then((responseFromBothSources) => {  
   const objectWithMineProfileData = responseFromBothSources[0];
   const objectsWithCardsData = responseFromBothSources[1];
-
   profileTitle.textContent = objectWithMineProfileData.name;
   profileDescription.textContent = objectWithMineProfileData.about;
   profileAvatar.src = objectWithMineProfileData.avatar;
 
-  objectsWithCardsData.forEach(function (item) {           
+  objectsWithCardsData.forEach(function (item) {
+    // начальный рендеринг ↓          
     renderCard(item, deleteCard, likeToggle, openImage, item.likes.length, objectWithMineProfileData._id, item._id);
+    
+    // выбор элемента карточки ↓ 
+    const cardEl = document.querySelector('.card__like-counter').closest('.card');
+    
+    //  скрытие иконки корзины с чужих карточек ↓ 
     hideTheTrashButton (item.owner._id, objectWithMineProfileData._id);
-    document.querySelector('.card__delete-button').addEventListener('click', () => removeCardFromServer(item._id));
-    document.querySelector('.card__like-button').addEventListener('click', () => sendLikeToServer(item._id));
-   
-    item.likes.forEach(function (authorOfObj) {
-      if (authorOfObj._id === objectWithMineProfileData._id) {
-        document.querySelector('.card__like-button').classList.add('card__like-button_is-active')
+    
+    //  проверка наличия прежде поставленных лайков в отрисованных карточках ↓
+    item.likes.forEach(function (objectOwner) {
+      if (objectOwner._id === objectWithMineProfileData._id) {
+        cardEl.querySelector('.card__like-button').classList.add('card__like-button_is-active');
       }
     })
-    
-    document.querySelectorAll('.card__like-button_is-active').forEach(function (heart) {
-      heart.addEventListener('click',() => deleteLikeFromServer(item._id)); 
-    })
 
+    //  слушатель иконки корзины для удаления с сервера ↓
+    cardEl.querySelector('.card__delete-button').addEventListener('click', () => removeCardFromServer(item._id));
+   
+    //  слушатель переключения лайка ↓
+    cardEl.querySelector('.card__like-button').addEventListener('click', function () {
+      if (cardEl.querySelector('.card__like-button').classList.contains('card__like-button_is-active')) {
+        sendLikeToServer(item._id, cardEl);
+      } else {        
+        deleteLikeFromServer(item._id, cardEl);
+      }
+    });
   });
 })
 
 // экспорт для работоспособности функции очистки валидации при закрытии модалок по Esc и клику на оверлей ↓
-export {formElementForEditProfile, formElementForCreateCard, formElementForChangeAvatar};
+export {
+  formElementForEditProfile, 
+  formElementForCreateCard, 
+  formElementForChangeAvatar  
+};

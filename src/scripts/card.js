@@ -10,7 +10,6 @@ function createCard (outObject, removing, liking, openingImage, likesAmount) {
   cardElement.querySelector('.card__delete-button').addEventListener('click', () => removing(cardElement));
   cardElement.querySelector('.card__like-button').addEventListener('click', liking);
   cardElement.querySelector('.card__like-counter').textContent = likesAmount;
-  cardElement.querySelector('.card__like-button').addEventListener('click', () => toggleLikesAmount (cardElement, likesAmount));
   cardElement.querySelector('.card__image').addEventListener('click', () => openingImage(outObject.link, outObject.name));
   return cardElement;
 }
@@ -24,6 +23,7 @@ function deleteCard(cardElement) {
 function likeToggle (evt) {
   if (evt.target.classList.contains('card__like-button')) {
     evt.target.classList.toggle('card__like-button_is-active');
+    
   }
 };
 
@@ -34,16 +34,6 @@ function hideTheTrashButton (ownerId, mineId) {
   }
 }
 
-// функция переключения количества лайков ↓
-function toggleLikesAmount (cardElement, likesAmount) {
-  if (cardElement.querySelector('.card__like-button').classList.contains('card__like-button_is-active')) {
-    cardElement.querySelector('.card__like-counter').textContent = likesAmount + 1;
-    // location.reload();
-  } else {
-    cardElement.querySelector('.card__like-counter').textContent = likesAmount - 1;
-    // location.reload();
-  }
-}
 
 export {
   content, 

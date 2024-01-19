@@ -1,4 +1,5 @@
-//      Конфиг запроса
+/////////////////////////////     Конфиг запроса     ///////////////////////////////
+
 const config = {
   baseUrl: 'https://nomoreparties.co/v1/wff-cohort-4',
   headers: {
@@ -7,7 +8,6 @@ const config = {
   }
 };
 
-/////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////     GET     ////////////////////////////////////
 
 // ф рендеринга профиля
@@ -23,7 +23,7 @@ const getPersonality  = () => {
     })
   .catch((err) => {
     console.log(`Ошибка рендеринга профиля: ${err}`); /// вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
-  })
+  });
 };
 
 // ф получения списка карточек
@@ -39,11 +39,9 @@ const getInitialCards = () => {
     })
   .catch((err) => {
     console.log(`Ошибка получения списка карточек: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
-  })
+  });
 };
 
-
-///////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////     PATCH     ////////////////////////////////////
 
 // ф редактирования профиля
@@ -64,7 +62,7 @@ const patchProfile = (newName, newDescription)  => {
     })
   .catch((err) => {
     console.log(`Ошибка редактирования профиля: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
-  })
+  });
 };
 
 // ф обновления ссылки на аватар на сервере
@@ -84,10 +82,9 @@ const sendNewAvatarToServer = (linkToNewAvatar) => {
     })
   .catch((err) => {
     console.log(`Ошибка обновления аватара: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
-  })
+  });
 };
 
-//////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////     POST  and  PUT   ////////////////////////////////////
 
 // ф добавления на сервер собственной карточки ↓
@@ -108,11 +105,11 @@ const addCardToServer = (mineName, mineLink) => {
     })
   .catch((err) => {
     console.log(`Ошибка добавления на сервер собственной карточки: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
-  })
+  });
 };
 
 // ф отправки лайка на сервер
-const sendLikeToServer = (concreteCardId) => {
+const sendLikeToServer = (concreteCardId, cardEl) => {
   fetch(`${config.baseUrl}/cards/likes/${concreteCardId}`, {
     method: 'PUT',
     headers: config.headers
@@ -123,16 +120,18 @@ const sendLikeToServer = (concreteCardId) => {
     }  
     return Promise.reject(res.status)
     })
+    .then ((objectAfterLike) => {
+      cardEl.querySelector('.card__like-counter').textContent = objectAfterLike.likes.length;
+    })
   .catch((err) => {
     console.log(`Ошибка отправки лайка на сервер: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
-  })
+  });
 };
 
-////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////     DELETE     ////////////////////////////////////
 
 // ф удаления лайка с сервера
-const deleteLikeFromServer = (concreteCardId) => {
+const deleteLikeFromServer = (concreteCardId, cardEl) => {
   fetch(`${config.baseUrl}/cards/likes/${concreteCardId}`, {
     method: 'DELETE',
     headers: config.headers
@@ -143,9 +142,12 @@ const deleteLikeFromServer = (concreteCardId) => {
     }  
     return Promise.reject(res.status)
     })
+    .then ((objectAfterDislike) => {
+      cardEl.querySelector('.card__like-counter').textContent = objectAfterDislike.likes.length;
+    })
   .catch((err) => {
     console.log(`Ошибка удаления лайка с сервера: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
-  })
+  });
 };
 
 // ф удаления собственной карточки с сервера ↓
@@ -164,7 +166,6 @@ const removeCardFromServer = (concreteCardId) => {
     console.log(`Ошибка удаления собственной карточки с сервера: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
   })
 };
-
 
 export { 
   getPersonality,   
