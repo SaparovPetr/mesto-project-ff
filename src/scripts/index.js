@@ -1,18 +1,16 @@
 import "../pages/index.css";
-import { content, createCard, deleteCard, likeToggle, hideTheTrashButton } from "./card";
+import { content, createCard, deleteCard, changeLikeState, hideTheTrashButtonIfRequired, showMineLike } from "./card";
 import { openModal, closeModal, closeByClickOnOverlay, renderLoading } from "./modal";
-import { validationConfig, enableValidation, clearValidation } from "./validation";
+import { enableValidation, clearValidation } from "./validation";
+import { validationConfig } from "./validationConfig";
 import { 
   getPersonality, 
   patchProfile, 
   getInitialCards, 
   addCardToServer, 
-  removeCardFromServer,
-  sendLikeToServer, 
-  deleteLikeFromServer, 
-  sendNewAvatarToServer
+  sendNewAvatarToServer,
+  handleResponse
 } from "./api";
-
 
 const placeList = content.querySelector(".places__list");
 const editButton = document.querySelector(".profile__edit-button");
@@ -25,9 +23,6 @@ const popupTypeAvatar = document.querySelector(".popup_type_change-avatar");
 const formElementForEditProfile = document.forms.editProfile;
 const formElementForCreateCard = document.forms.newPlace;
 const formElementForChangeAvatar = document.forms.changeAvatar;
-const profileAvatar = document.querySelector('.profile__avatar')
-const profileTitle = document.querySelector(".profile__title");
-const profileDescription = document.querySelector(".profile__description");
 const nameInput = formElementForEditProfile.elements.name;
 const jobInput = formElementForEditProfile.elements.description;
 const plaseTitle = formElementForCreateCard.elements.placeName;
@@ -37,13 +32,14 @@ const popupImage = document.querySelector(".popup__image");
 const popupCaption = document.querySelector(".popup__caption");
 
 // функция добавления созданного элемента карточки ↓
-function renderCard(objectFromArray, removing, liking, openingImage, likesAmount) {
+function renderCard(objectFromArray, removing, liking, openingImage, likesAmount, cardId) {
   const renderedCardElement = createCard(
     objectFromArray,
     removing,
     liking,
     openingImage,
-    likesAmount
+    likesAmount,
+    cardId
   );
   placeList.prepend(renderedCardElement);
 }
@@ -51,13 +47,19 @@ function renderCard(objectFromArray, removing, liking, openingImage, likesAmount
 // обработчик отправки формы редактирования профиля ↓
 function submitToProfileForm(evt) {
   evt.preventDefault();
-  profileTitle.textContent = nameInput.value;
-  profileDescription.textContent = jobInput.value;
+  patchProfile(nameInput.value, jobInput.value)
+  .then((res) => handleResponse(res))
+  .then ((objectAfterProfileEdition) => {
+    document.querySelector(".profile__title").textContent = objectAfterProfileEdition.name;
+    document.querySelector(".profile__description").textContent = objectAfterProfileEdition.about; 
+  })
+  .catch((err) => {
+    console.log(`Ошибка редактирования профиля: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
+  });
+  renderLoading (true, popupTypeEdit);
   formElementForEditProfile.reset();
-  patchProfile(profileTitle.textContent, profileDescription.textContent);
-  renderLoading (true);
   closeModal(popupTypeEdit);
-  clearValidation (formElementForEditProfile, validationConfig); 
+  clearValidation (formElementForEditProfile); 
 }
 
 // обработчик отправки формы добавления карточки ↓
@@ -67,23 +69,36 @@ function submitToNewCardForm(evt) {
     name: plaseTitle.value,
     link: placeLink.value,
   };
-  renderCard(newObj, deleteCard, likeToggle, openImage, 0);
-  formElementForCreateCard.reset();
   addCardToServer(newObj.name, newObj.link)
-  renderLoading (true);
+  .then((res) => handleResponse(res))
+  .then ((objectAfterCardCreation) => {
+   renderCard(objectAfterCardCreation, deleteCard, changeLikeState, openImage, objectAfterCardCreation.likes.length, objectAfterCardCreation._id);
+  })
+  .catch((err) => {
+    console.log(`Ошибка добавления на сервер собственной карточки: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
+  });
+  formElementForCreateCard.reset();  
+  renderLoading (true, popupTypeNewCard);
   closeModal(popupTypeNewCard);
-  clearValidation (formElementForCreateCard, validationConfig); 
+  clearValidation (formElementForCreateCard); 
 }
 
 // обработчик отправки формы смены аватара ↓
 function submitToAvatarForm(evt) {
   evt.preventDefault();
-  profileAvatar.src = avatarInput.value;
-  sendNewAvatarToServer(avatarInput.value);
-  renderLoading (true);
+  sendNewAvatarToServer(avatarInput.value)
+  .then((res) => handleResponse(res))
+  .then ((objectAfterAvatarEdition) => {
+    console.log(objectAfterAvatarEdition)
+    document.querySelector('.profile__avatar').src = objectAfterAvatarEdition.avatar;
+  })
+  .catch((err) => {
+    console.log(`Ошибка обновления аватара: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
+  });
+  renderLoading (true, popupTypeAvatar);
   formElementForChangeAvatar.reset();
   closeModal(popupTypeAvatar);
-  clearValidation (formElementForChangeAvatar, validationConfig);
+  clearValidation (formElementForChangeAvatar);
 }
 
 // открытие картинки ↓
@@ -96,31 +111,28 @@ function openImage(outLink, outName) {
 
 // открытие попапа по кнопке редактирования профиля ↓
 editButton.addEventListener("click", function () {
-  nameInput.value = profileTitle.textContent;
-  jobInput.value = profileDescription.textContent;
+  nameInput.value = document.querySelector(".profile__title").textContent;
+  jobInput.value = document.querySelector(".profile__description").textContent;
   openModal(popupTypeEdit);
-  renderLoading (false);
+  renderLoading (false, popupTypeEdit);
 });
 
 // открытие попапа по кнопке редактирования карточки ↓
 addButton.addEventListener("click", function () {
   openModal(popupTypeNewCard);
-  renderLoading (false);
+  renderLoading (false, popupTypeNewCard);
 });
 
 // открытие попапа по кнопке редактирования аватара ↓
 avatarButton.addEventListener("click", function () {
   openModal(popupTypeAvatar);
-  renderLoading (false);
+  renderLoading (false, popupTypeAvatar);
 });
 
 // закрытие по клику на кнопку закрытия ↓
 document.querySelectorAll(".popup__close").forEach(function (concreteButton) {
   concreteButton.addEventListener("click", function () {
     closeModal(document.querySelector(".popup_is-opened"));
-    clearValidation (formElementForEditProfile, validationConfig); 
-    clearValidation (formElementForCreateCard, validationConfig); 
-    clearValidation (formElementForChangeAvatar, validationConfig); 
   });
 });
 
@@ -139,51 +151,45 @@ enableValidation(validationConfig);
 
 // запуск асинхронного кода ↓
 Promise.all([
-  getPersonality(), 
-  getInitialCards(),
+  getPersonality()
+    .then((res) => handleResponse(res))
+    .catch((err) => {console.log(`Ошибка рендеринга профиля: ${err}`)}), // сделать верстку модалки
+  getInitialCards()
+    .then((res) => handleResponse(res))
+    .catch((err) => {console.log(`Ошибка получения списка карточек: ${err}`)}) // сделать верстку модалки
 ])
 
-.then((responseFromBothSources) => {  
-  const objectWithMineProfileData = responseFromBothSources[0];
-  const objectsWithCardsData = responseFromBothSources[1];
-  profileTitle.textContent = objectWithMineProfileData.name;
-  profileDescription.textContent = objectWithMineProfileData.about;
-  profileAvatar.src = objectWithMineProfileData.avatar;
+.then(([objectWithMineProfileData, objectsWithCardsData]) => { 
+  document.querySelector(".profile__title").textContent = objectWithMineProfileData.name;
+  document.querySelector(".profile__description").textContent = objectWithMineProfileData.about;
+  document.querySelector('.profile__avatar').src = objectWithMineProfileData.avatar;
 
   objectsWithCardsData.forEach(function (item) {
-    // начальный рендеринг ↓          
-    renderCard(item, deleteCard, likeToggle, openImage, item.likes.length, objectWithMineProfileData._id, item._id);
+    // начальный рендеринг карточки ↓          
+    renderCard(item, deleteCard, changeLikeState, openImage, item.likes.length, item._id);
     
     // выбор элемента карточки ↓ 
     const cardEl = document.querySelector('.card__like-counter').closest('.card');
     
-    //  скрытие иконки корзины с чужих карточек ↓ 
-    hideTheTrashButton (item.owner._id, objectWithMineProfileData._id);
-    
-    //  проверка наличия прежде поставленных лайков в отрисованных карточках ↓
-    item.likes.forEach(function (objectOwner) {
-      if (objectOwner._id === objectWithMineProfileData._id) {
-        cardEl.querySelector('.card__like-button').classList.add('card__like-button_is-active');
-      }
-    })
+     // выбор элемента кнопки удаления ↓ 
+    const trashButton = cardEl.querySelector('.card__delete-button');
 
-    //  слушатель клика иконки корзины для удаления с сервера ↓
-    cardEl.querySelector('.card__delete-button').addEventListener('click', () => removeCardFromServer(item._id));
-   
-    //  слушатель переключения лайка ↓
-    cardEl.querySelector('.card__like-button').addEventListener('click', function () {
-      if (cardEl.querySelector('.card__like-button').classList.contains('card__like-button_is-active')) {
-        sendLikeToServer(item._id, cardEl);
-      } else {        
-        deleteLikeFromServer(item._id, cardEl);
-      }
-    });
-  });
+    //  скрытие кнопки удаления с чужих карточек ↓ 
+    hideTheTrashButtonIfRequired (item.owner._id, objectWithMineProfileData._id, trashButton);
+    
+    //  проверка наличия прежде поставленного лайка в отрисованной карточке ↓
+    showMineLike(item.likes, objectWithMineProfileData._id, cardEl);
+  })
 })
 
-// экспорт для работоспособности функции очистки валидации при закрытии модалок по Esc и клику на оверлей ↓
-export {
-  formElementForEditProfile, 
-  formElementForCreateCard, 
-  formElementForChangeAvatar  
-};
+
+
+    // Если вы не против, мне бы не хотелось вызывать функции 
+    // hideTheTrashButtonIfRequired и showMineLike в createCard, 
+    // поскольку они же все равно ничего не сделают с карточкой при ее создании через сабмит, 
+    // а чтение createCard мне через полгода усложнят))) 
+    // Но если это важно, я, разумеется, все переделаю ;)
+    
+    // PS. 
+    // Спасибо вам и вашим коллегам за ревью! Меня впечатляет его детальность. 
+    // Лично мне очень помогли ваши комментарии в понимании теории курса и того бардака, что я тут развел))

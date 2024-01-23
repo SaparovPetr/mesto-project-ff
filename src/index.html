@@ -30,10 +30,10 @@
           </div>
           <div class="profile__info">
             <h1 class="profile__title">Ваше имя</h1>
-            <button class="profile__edit-button" type="button"></button>
+            <button class="profile__edit-button" type="button" aria-label="Кнопка редактирования вашего профиля"></button>
             <p class="profile__description">О себе</p>
           </div>
-          <button class="profile__add-button" type="button"></button>
+          <button class="profile__add-button" type="button" aria-label="Кнопка добавления новой карточки с вашим метом"></button>
         </section>
         <section class="places page__section">
           <ul class="places__list"></ul>
@@ -46,7 +46,7 @@
       <!-- попап редактирования профиля-->
       <div class="popup popup_type_edit">
         <div class="popup__content">
-          <button type="button" class="popup__close"></button>
+          <button type="button" class="popup__close"  aria-label="Кнопка закрытия модального окна"></button>
           <h3 class="popup__title">Редактировать профиль</h3>
           <form
             class="popup__form popup__form_editProfile"
@@ -84,7 +84,7 @@
               <span class="popup__input-error description-input-error"></span>
             </label>
 
-            <button type="submit" class="popup__button button"></button>
+            <button type="submit" class="popup__button button" aria-label="Кнопка подтверждения сохранения данных пользователя"></button>
           </form>
         </div>
       </div>
@@ -92,7 +92,7 @@
       <!-- попап новой карточки -->
       <div class="popup popup_type_new-card">
         <div class="popup__content">
-          <button type="button" class="popup__close"></button>
+          <button type="button" class="popup__close" aria-label="Кнопка закрытия модального окна"></button>
           <h3 class="popup__title">Новое место</h3>
           <form
             class="popup__form popup__form_newPlace"
@@ -125,7 +125,7 @@
               />
               <span class="popup__input-error link-input-error"></span>
             </label>
-            <button type="submit" class="popup__button button"></button>
+            <button type="submit" class="popup__button button" aria-label="Кнопка сохранения данных новой карточки"></button>
           </form>
         </div>
       </div>
@@ -133,7 +133,7 @@
       <!-- попап картинки -->
       <div class="popup popup_type_image">
         <div class="popup__content popup__content_content_image">
-          <button type="button" class="popup__close"></button>
+          <button type="button" class="popup__close" aria-label="Кнопка закрытия модального окна"></button>
           <img src="" alt="" class="popup__image" />
           <p class="popup__caption"></p>
         </div>
@@ -143,7 +143,7 @@
     <!-- попап аватара -->
     <div class="popup popup_type_change-avatar">
       <div class="popup__content popup__content_type-avatar">
-        <button type="button" class="popup__close"></button>
+        <button type="button" class="popup__close" aria-label="Кнопка закрытия модального окна"></button>
         <h3 class="popup__title">Обновить аватар</h3>
         <form
           class="popup__form popup__form_changeAvatar"
@@ -161,7 +161,7 @@
             />
             <span class="popup__input-error URL-input-error"></span>
           </label>
-          <button type="submit" class="popup__button button"></button>
+          <button type="submit" class="popup__button button" aria-label="Кнопка сохранения вашего нового аватара"></button>
         </form>
       </div>
     </div>
@@ -169,11 +169,11 @@
     <template id="card-template">
       <li class="places__item card">
         <img class="card__image" src="" alt="" />
-        <button type="button" class="card__delete-button"></button>
+        <button type="button" class="card__delete-button" aria-label="Кнопка удаления созданной вами карточки"></button>
         <div class="card__description">
           <h2 class="card__title"></h2>
           <div class="card__like_area">
-            <button type="button" class="card__like-button"></button>
+            <button type="button" class="card__like-button" aria-label="Кнопка установки лайка на карточке"></button>
             <div class="card__like-counter"></div>
           </div>
         </div>

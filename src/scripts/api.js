@@ -1,5 +1,4 @@
-/////////////////////////////     Конфиг запроса     ///////////////////////////////
-
+// Конфиг запроса ↓
 const config = {
   baseUrl: 'https://nomoreparties.co/v1/wff-cohort-4',
   headers: {
@@ -8,45 +7,35 @@ const config = {
   }
 };
 
+// ф. обработки ответа ↓
+const handleResponse = (res) => {   
+  if (res.ok) {
+    return res.json();
+  }  
+  return Promise.reject(res.status)    
+};
+
 ////////////////////////////////////     GET     ////////////////////////////////////
 
-// ф рендеринга профиля
-const getPersonality  = () => {
+// ф. рендеринга профиля ↓
+const getPersonality = () => {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers
   })
-  .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }  
-    return Promise.reject(res.status)
-    })
-  .catch((err) => {
-    console.log(`Ошибка рендеринга профиля: ${err}`); /// вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
-  });
 };
 
-// ф получения списка карточек
+// ф. получения списка карточек ↓
 const getInitialCards = () => {
   return fetch(`${config.baseUrl}/cards`, {
       headers: config.headers
   })
-  .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }  
-    return Promise.reject(res.status)
-    })
-  .catch((err) => {
-    console.log(`Ошибка получения списка карточек: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
-  });
 };
 
 ////////////////////////////////////     PATCH     ////////////////////////////////////
 
-// ф редактирования профиля
+// ф. редактирования профиля ↓
 const patchProfile = (newName, newDescription)  => {
-  fetch(`${config.baseUrl}/users/me`, {
+  return fetch(`${config.baseUrl}/users/me`, {
     method: 'PATCH',
     headers: config.headers,
     body: JSON.stringify({
@@ -54,42 +43,24 @@ const patchProfile = (newName, newDescription)  => {
       about: newDescription
     })
   })
-  .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }  
-    return Promise.reject(res.status)
-    })
-  .catch((err) => {
-    console.log(`Ошибка редактирования профиля: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
-  });
 };
 
-// ф обновления ссылки на аватар на сервере
+// ф. обновления ссылки на аватар на сервере ↓
 const sendNewAvatarToServer = (linkToNewAvatar) => {
-  fetch(`${config.baseUrl}/users/me/avatar`, {
+  return fetch(`${config.baseUrl}/users/me/avatar`, {
     method: 'PATCH',
     headers: config.headers,
     body: JSON.stringify({
       avatar: linkToNewAvatar      
     })
   })
-  .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }  
-    return Promise.reject(res.status)
-    })
-  .catch((err) => {
-    console.log(`Ошибка обновления аватара: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
-  });
 };
 
 ////////////////////////////////////     POST  and  PUT   ////////////////////////////////////
 
-// ф добавления на сервер собственной карточки ↓
+// ф. добавления на сервер собственной карточки ↓
 const addCardToServer = (mineName, mineLink) => {
-  fetch(`${config.baseUrl}/cards`, {
+  return fetch(`${config.baseUrl}/cards`, {
     method: 'POST',
     body: JSON.stringify({
       name: mineName,
@@ -97,73 +68,31 @@ const addCardToServer = (mineName, mineLink) => {
     }),
     headers: config.headers
   })
-  .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }  
-    return Promise.reject(res.status)
-    })
-  .catch((err) => {
-    console.log(`Ошибка добавления на сервер собственной карточки: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
-  });
 };
 
-// ф отправки лайка на сервер
-const sendLikeToServer = (concreteCardId, cardEl) => {
-  fetch(`${config.baseUrl}/cards/likes/${concreteCardId}`, {
+// ф. отправки лайка на сервер ↓
+const sendLikeToServer = (concreteCardId) => {
+  return fetch(`${config.baseUrl}/cards/likes/${concreteCardId}`, {
     method: 'PUT',
     headers: config.headers
   })
-  .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }  
-    return Promise.reject(res.status)
-    })
-    .then ((objectAfterLike) => {
-      cardEl.querySelector('.card__like-counter').textContent = objectAfterLike.likes.length;
-    })
-  .catch((err) => {
-    console.log(`Ошибка отправки лайка на сервер: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
-  });
 };
 
 ////////////////////////////////////     DELETE     ////////////////////////////////////
 
-// ф удаления лайка с сервера
-const deleteLikeFromServer = (concreteCardId, cardEl) => {
-  fetch(`${config.baseUrl}/cards/likes/${concreteCardId}`, {
+// ф. удаления лайка с сервера ↓
+const deleteLikeFromServer = (concreteCardId) => {
+  return fetch(`${config.baseUrl}/cards/likes/${concreteCardId}`, {
     method: 'DELETE',
     headers: config.headers
   })
-  .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }  
-    return Promise.reject(res.status)
-    })
-    .then ((objectAfterDislike) => {
-      cardEl.querySelector('.card__like-counter').textContent = objectAfterDislike.likes.length;
-    })
-  .catch((err) => {
-    console.log(`Ошибка удаления лайка с сервера: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
-  });
 };
 
-// ф удаления собственной карточки с сервера ↓
+// ф. удаления собственной карточки с сервера ↓
 const removeCardFromServer = (concreteCardId) => {
-  fetch(`${config.baseUrl}/cards/${concreteCardId}`, {
+  return fetch(`${config.baseUrl}/cards/${concreteCardId}`, {
     method: 'DELETE',
     headers: config.headers
-  })
-  .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }  
-    return Promise.reject(res.status)
-    })
-  .catch((err) => {
-    console.log(`Ошибка удаления собственной карточки с сервера: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
   })
 };
 
@@ -175,5 +104,6 @@ export {
   removeCardFromServer,
   sendLikeToServer, 
   deleteLikeFromServer, 
-  sendNewAvatarToServer
+  sendNewAvatarToServer,
+  handleResponse
 };
