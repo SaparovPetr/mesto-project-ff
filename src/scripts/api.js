@@ -22,6 +22,7 @@ const getPersonality = () => {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers
   })
+  .then((res) => handleResponse(res))
 };
 
 // ф. получения списка карточек ↓
@@ -29,6 +30,7 @@ const getInitialCards = () => {
   return fetch(`${config.baseUrl}/cards`, {
       headers: config.headers
   })
+  .then((res) => handleResponse(res))
 };
 
 ////////////////////////////////////     PATCH     ////////////////////////////////////
@@ -43,6 +45,7 @@ const patchProfile = (newName, newDescription)  => {
       about: newDescription
     })
   })
+  .then((res) => handleResponse(res))
 };
 
 // ф. обновления ссылки на аватар на сервере ↓
@@ -54,6 +57,7 @@ const sendNewAvatarToServer = (linkToNewAvatar) => {
       avatar: linkToNewAvatar      
     })
   })
+  .then((res) => handleResponse(res))
 };
 
 ////////////////////////////////////     POST  and  PUT   ////////////////////////////////////
@@ -68,6 +72,7 @@ const addCardToServer = (mineName, mineLink) => {
     }),
     headers: config.headers
   })
+  .then((res) => handleResponse(res))
 };
 
 // ф. отправки лайка на сервер ↓
@@ -76,6 +81,7 @@ const sendLikeToServer = (concreteCardId) => {
     method: 'PUT',
     headers: config.headers
   })
+  .then((res) => handleResponse(res))
 };
 
 ////////////////////////////////////     DELETE     ////////////////////////////////////
@@ -86,6 +92,7 @@ const deleteLikeFromServer = (concreteCardId) => {
     method: 'DELETE',
     headers: config.headers
   })
+  .then((res) => handleResponse(res))
 };
 
 // ф. удаления собственной карточки с сервера ↓
@@ -94,6 +101,7 @@ const removeCardFromServer = (concreteCardId) => {
     method: 'DELETE',
     headers: config.headers
   })
+  .then((res) => handleResponse(res))
 };
 
 export { 
@@ -104,6 +112,5 @@ export {
   removeCardFromServer,
   sendLikeToServer, 
   deleteLikeFromServer, 
-  sendNewAvatarToServer,
-  handleResponse
+  sendNewAvatarToServer
 };

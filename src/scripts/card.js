@@ -1,6 +1,5 @@
 import { 
   removeCardFromServer,
-  handleResponse, 
   deleteLikeFromServer, 
   sendLikeToServer
 } from "./api";
@@ -29,7 +28,6 @@ function createCard (outObject, removing, liking, openingImage, likesAmount, car
 function changeLikeState (cardId, isLiked, likeCounter, evt) {
   const methodOfInterractionWithServer = isLiked ? deleteLikeFromServer : sendLikeToServer;
   methodOfInterractionWithServer(cardId) 
-  .then((res) => handleResponse(res))
   .then((res) => {
     if (evt.target.classList.contains('card__like-button')) {
       evt.target.classList.toggle('card__like-button_is-active');    
@@ -42,14 +40,13 @@ function changeLikeState (cardId, isLiked, likeCounter, evt) {
 // ф. удаления элемента карточки ↓
 function deleteCard(cardElement, cardId) {
   removeCardFromServer(cardId)
-  .then((res) => handleResponse(res))
   .catch((err) => {
     console.log(`Ошибка удаления собственной карточки с сервера: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
   })
   cardElement.remove();
 }
 
-// ф. скрытия иконки корзины ↓
+// ф. скрытия иконки корзины на чужой карточке ↓
 function hideTheTrashButtonIfRequired (ownerId, mineId, cardsButton) {
   if (ownerId !== mineId) {
     cardsButton.classList.add('card__delete-button_hidden')
@@ -57,12 +54,10 @@ function hideTheTrashButtonIfRequired (ownerId, mineId, cardsButton) {
 }
 
 //  ф. проверки наличия в карточке собственного лайка ↓
-function showMineLike (arreyWithLikes, mineId, concreteCard){
-  arreyWithLikes.forEach(function () {
-    if (arreyWithLikes.some(likeOwner => likeOwner._id === mineId)) {
-      concreteCard.querySelector('.card__like-button').classList.add('card__like-button_is-active');
-    }
-  })
+function showMineLike (arreyWithLikes, mineId, concreteCard) {  
+  if (arreyWithLikes.some(likeOwner => likeOwner._id === mineId)) {
+    concreteCard.querySelector('.card__like-button').classList.add('card__like-button_is-active');
+  }  
 }
 
 export {

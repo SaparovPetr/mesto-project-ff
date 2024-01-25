@@ -8,8 +8,7 @@ import {
   patchProfile, 
   getInitialCards, 
   addCardToServer, 
-  sendNewAvatarToServer,
-  handleResponse
+  sendNewAvatarToServer  
 } from "./api";
 
 const placeList = content.querySelector(".places__list");
@@ -48,7 +47,6 @@ function renderCard(objectFromArray, removing, liking, openingImage, likesAmount
 function submitToProfileForm(evt) {
   evt.preventDefault();
   patchProfile(nameInput.value, jobInput.value)
-  .then((res) => handleResponse(res))
   .then ((objectAfterProfileEdition) => {
     document.querySelector(".profile__title").textContent = objectAfterProfileEdition.name;
     document.querySelector(".profile__description").textContent = objectAfterProfileEdition.about; 
@@ -59,7 +57,6 @@ function submitToProfileForm(evt) {
   renderLoading (true, popupTypeEdit);
   formElementForEditProfile.reset();
   closeModal(popupTypeEdit);
-  clearValidation (formElementForEditProfile); 
 }
 
 // обработчик отправки формы добавления карточки ↓
@@ -70,7 +67,6 @@ function submitToNewCardForm(evt) {
     link: placeLink.value,
   };
   addCardToServer(newObj.name, newObj.link)
-  .then((res) => handleResponse(res))
   .then ((objectAfterCardCreation) => {
    renderCard(objectAfterCardCreation, deleteCard, changeLikeState, openImage, objectAfterCardCreation.likes.length, objectAfterCardCreation._id);
   })
@@ -80,14 +76,12 @@ function submitToNewCardForm(evt) {
   formElementForCreateCard.reset();  
   renderLoading (true, popupTypeNewCard);
   closeModal(popupTypeNewCard);
-  clearValidation (formElementForCreateCard); 
 }
 
 // обработчик отправки формы смены аватара ↓
 function submitToAvatarForm(evt) {
   evt.preventDefault();
   sendNewAvatarToServer(avatarInput.value)
-  .then((res) => handleResponse(res))
   .then ((objectAfterAvatarEdition) => {
     console.log(objectAfterAvatarEdition)
     document.querySelector('.profile__avatar').src = objectAfterAvatarEdition.avatar;
@@ -98,7 +92,6 @@ function submitToAvatarForm(evt) {
   renderLoading (true, popupTypeAvatar);
   formElementForChangeAvatar.reset();
   closeModal(popupTypeAvatar);
-  clearValidation (formElementForChangeAvatar);
 }
 
 // открытие картинки ↓
@@ -115,18 +108,21 @@ editButton.addEventListener("click", function () {
   jobInput.value = document.querySelector(".profile__description").textContent;
   openModal(popupTypeEdit);
   renderLoading (false, popupTypeEdit);
+  clearValidation (formElementForEditProfile, validationConfig); 
 });
 
 // открытие попапа по кнопке редактирования карточки ↓
 addButton.addEventListener("click", function () {
   openModal(popupTypeNewCard);
   renderLoading (false, popupTypeNewCard);
+  clearValidation (formElementForCreateCard, validationConfig); 
 });
 
 // открытие попапа по кнопке редактирования аватара ↓
 avatarButton.addEventListener("click", function () {
   openModal(popupTypeAvatar);
   renderLoading (false, popupTypeAvatar);
+  clearValidation (formElementForChangeAvatar, validationConfig);
 });
 
 // закрытие по клику на кнопку закрытия ↓
@@ -152,10 +148,8 @@ enableValidation(validationConfig);
 // запуск асинхронного кода ↓
 Promise.all([
   getPersonality()
-    .then((res) => handleResponse(res))
     .catch((err) => {console.log(`Ошибка рендеринга профиля: ${err}`)}), // сделать верстку модалки
   getInitialCards()
-    .then((res) => handleResponse(res))
     .catch((err) => {console.log(`Ошибка получения списка карточек: ${err}`)}) // сделать верстку модалки
 ])
 
@@ -181,15 +175,3 @@ Promise.all([
     showMineLike(item.likes, objectWithMineProfileData._id, cardEl);
   })
 })
-
-
-
-    // Если вы не против, мне бы не хотелось вызывать функции 
-    // hideTheTrashButtonIfRequired и showMineLike в createCard, 
-    // поскольку они же все равно ничего не сделают с карточкой при ее создании через сабмит, 
-    // а чтение createCard мне через полгода усложнят))) 
-    // Но если это важно, я, разумеется, все переделаю ;)
-    
-    // PS. 
-    // Спасибо вам и вашим коллегам за ревью! Меня впечатляет его детальность. 
-    // Лично мне очень помогли ваши комментарии в понимании теории курса и того бардака, что я тут развел))
