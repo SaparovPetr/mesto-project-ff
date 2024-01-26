@@ -19,16 +19,11 @@ const popupTypeEdit = document.querySelector(".popup_type_edit");
 const popupTypeNewCard = document.querySelector(".popup_type_new-card");
 const popupTypeImage = document.querySelector(".popup_type_image");
 const popupTypeAvatar = document.querySelector(".popup_type_change-avatar");
-
 const popupTypeError = document.querySelector(".popup_type_error-message");
-
 const formElementForEditProfile = document.forms.editProfile;
 const formElementForCreateCard = document.forms.newPlace;
 const formElementForChangeAvatar = document.forms.changeAvatar;
-
 const formElementForErrorMessage= document.forms.errorMessage;
-
-
 const nameInput = formElementForEditProfile.elements.name;
 const jobInput = formElementForEditProfile.elements.description;
 const plaseTitle = formElementForCreateCard.elements.placeName;
@@ -67,11 +62,6 @@ function submitToProfileForm(evt) {
   formElementForEditProfile.reset();
   closeModal(popupTypeEdit);
 }
-
-
-
-
-
 
 // обработчик отправки формы добавления карточки ↓
 function submitToNewCardForm(evt) {
@@ -201,12 +191,7 @@ Promise.all([
   })
 })
 
-
-
-
-
-
-
+// ф. открытия модалки при пробелемах с сервером
 export function openErrorModal (message) {
   openModal(popupTypeError);
   document.querySelector(".popup__error-text").textContent = message;
