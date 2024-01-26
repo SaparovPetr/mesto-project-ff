@@ -4,8 +4,19 @@ import {
   sendLikeToServer
 } from "./api";
 
+import { 
+  openModal,
+  closeModal
+} from "./modal";
+
+import { 
+  openErrorModal
+} from "./index";
+
 const content = document.querySelector('.content');
 const cardTemplate = document.querySelector('#card-template').content; 
+const popupTypeDeleteCard = document.querySelector(".popup_type_delete-card");
+const formElementForDeleteCard = document.forms.deleteCard;
 
 // ф. создания элемента карточки ↓
 function createCard (outObject, removing, liking, openingImage, likesAmount, cardId) {
@@ -24,6 +35,27 @@ function createCard (outObject, removing, liking, openingImage, likesAmount, car
   return cardElement;
 }
 
+// ф. открытия модалки по кнопке удаления на карточке ↓
+function openConfirmingModalForDeleteCard (cardElement, cardId) {
+  openModal(popupTypeDeleteCard);
+  formElementForDeleteCard.addEventListener("submit", () => submitToDeleteCard (cardElement, cardId));
+}
+
+// ф. обработчик отправки формы удаления карточки ↓
+function submitToDeleteCard(cardElement, cardId) {
+  deleteCard(cardElement, cardId);
+  closeModal(popupTypeDeleteCard);
+}
+
+// ф. удаления элемента карточки с сервера и из DOM ↓
+function deleteCard(cardElement, cardId) {
+  removeCardFromServer(cardId)
+  .catch((err) => {
+    openErrorModal(`Ошибка удаления собственной карточки с сервера: ${err}`);
+  })
+  cardElement.remove();
+}
+
 // ф. переключения лайка на карточке ↓
 function changeLikeState (cardId, isLiked, likeCounter, evt) {
   const methodOfInterractionWithServer = isLiked ? deleteLikeFromServer : sendLikeToServer;
@@ -34,16 +66,9 @@ function changeLikeState (cardId, isLiked, likeCounter, evt) {
     }
     likeCounter.textContent = res.likes.length; 
   })
-  .catch(err => console.log(`Ошибка обработки кнопки лайка: ${err}`));
-}
-
-// ф. удаления элемента карточки ↓
-function deleteCard(cardElement, cardId) {
-  removeCardFromServer(cardId)
   .catch((err) => {
-    console.log(`Ошибка удаления собственной карточки с сервера: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
-  })
-  cardElement.remove();
+    openErrorModal(`Ошибка обработки кнопки лайка: ${err}`);
+  });
 }
 
 // ф. скрытия иконки корзины на чужой карточке ↓
@@ -66,5 +91,6 @@ export {
   deleteCard, 
   changeLikeState, 
   hideTheTrashButtonIfRequired,
-  showMineLike
+  showMineLike, 
+  openConfirmingModalForDeleteCard
 };

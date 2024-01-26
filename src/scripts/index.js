@@ -1,5 +1,5 @@
 import "../pages/index.css";
-import { content, createCard, deleteCard, changeLikeState, hideTheTrashButtonIfRequired, showMineLike } from "./card";
+import { content, createCard, openConfirmingModalForDeleteCard, changeLikeState, hideTheTrashButtonIfRequired, showMineLike } from "./card";
 import { openModal, closeModal, closeByClickOnOverlay, renderLoading } from "./modal";
 import { enableValidation, clearValidation } from "./validation";
 import { validationConfig } from "./validationConfig";
@@ -19,9 +19,16 @@ const popupTypeEdit = document.querySelector(".popup_type_edit");
 const popupTypeNewCard = document.querySelector(".popup_type_new-card");
 const popupTypeImage = document.querySelector(".popup_type_image");
 const popupTypeAvatar = document.querySelector(".popup_type_change-avatar");
+
+const popupTypeError = document.querySelector(".popup_type_error-message");
+
 const formElementForEditProfile = document.forms.editProfile;
 const formElementForCreateCard = document.forms.newPlace;
 const formElementForChangeAvatar = document.forms.changeAvatar;
+
+const formElementForErrorMessage= document.forms.errorMessage;
+
+
 const nameInput = formElementForEditProfile.elements.name;
 const jobInput = formElementForEditProfile.elements.description;
 const plaseTitle = formElementForCreateCard.elements.placeName;
@@ -53,11 +60,18 @@ function submitToProfileForm(evt) {
   })
   .catch((err) => {
     console.log(`Ошибка редактирования профиля: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
+    openErrorModal (`Ошибка редактирования профиля: ${err}`); 
+    
   });
   renderLoading (true, popupTypeEdit);
   formElementForEditProfile.reset();
   closeModal(popupTypeEdit);
 }
+
+
+
+
+
 
 // обработчик отправки формы добавления карточки ↓
 function submitToNewCardForm(evt) {
@@ -68,10 +82,13 @@ function submitToNewCardForm(evt) {
   };
   addCardToServer(newObj.name, newObj.link)
   .then ((objectAfterCardCreation) => {
-   renderCard(objectAfterCardCreation, deleteCard, changeLikeState, openImage, objectAfterCardCreation.likes.length, objectAfterCardCreation._id);
+   renderCard(objectAfterCardCreation, openConfirmingModalForDeleteCard, changeLikeState, openImage, objectAfterCardCreation.likes.length, objectAfterCardCreation._id);
   })
   .catch((err) => {
     console.log(`Ошибка добавления на сервер собственной карточки: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
+    openErrorModal (`Ошибка добавления на сервер собственной карточки: ${err}`); 
+
+    
   });
   formElementForCreateCard.reset();  
   renderLoading (true, popupTypeNewCard);
@@ -88,6 +105,8 @@ function submitToAvatarForm(evt) {
   })
   .catch((err) => {
     console.log(`Ошибка обновления аватара: ${err}`); // вывожу ошибку в консоль - сделать модалку в отдельной ветке и смержить
+    openErrorModal (`Ошибка обновления аватара: ${err}`); 
+
   });
   renderLoading (true, popupTypeAvatar);
   formElementForChangeAvatar.reset();
@@ -148,9 +167,15 @@ enableValidation(validationConfig);
 // запуск асинхронного кода ↓
 Promise.all([
   getPersonality()
-    .catch((err) => {console.log(`Ошибка рендеринга профиля: ${err}`)}), // сделать верстку модалки
+    .catch((err) => {
+      console.log(`Ошибка рендеринга профиля: ${err}`);
+      openErrorModal (`Ошибка рендеринга профиля ${err}`); 
+    }), // сделать верстку модалки
   getInitialCards()
-    .catch((err) => {console.log(`Ошибка получения списка карточек: ${err}`)}) // сделать верстку модалки
+    .catch((err) => {
+      console.log(`Ошибка получения списка карточек: ${err}`);
+      openErrorModal (`Ошибка получения списка карточек: ${err}`); 
+    }) // сделать верстку модалки
 ])
 
 .then(([objectWithMineProfileData, objectsWithCardsData]) => { 
@@ -160,7 +185,7 @@ Promise.all([
 
   objectsWithCardsData.forEach(function (item) {
     // начальный рендеринг карточки ↓          
-    renderCard(item, deleteCard, changeLikeState, openImage, item.likes.length, item._id);
+    renderCard(item, openConfirmingModalForDeleteCard, changeLikeState, openImage, item.likes.length, item._id);
     
     // выбор элемента карточки ↓ 
     const cardEl = document.querySelector('.card__like-counter').closest('.card');
@@ -175,3 +200,17 @@ Promise.all([
     showMineLike(item.likes, objectWithMineProfileData._id, cardEl);
   })
 })
+
+
+
+
+
+
+
+export function openErrorModal (message) {
+  openModal(popupTypeError);
+  document.querySelector(".popup__error-text").textContent = message;
+  formElementForErrorMessage.addEventListener("submit", function () {
+    location.reload();    
+  });
+}

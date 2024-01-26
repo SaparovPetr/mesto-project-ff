@@ -21,3 +21,16 @@
 .popup__content_type-avatar  { 
   min-height: 272px;
 }
+
+.popup__content_type_delete-card {
+  min-height: 181px;
+}
+
+.popup__content_type_error-message {
+  min-height: 181px;
+}
+
+.popup__error-text {
+  margin-top: 40px;
+  text-align: center;
+}
