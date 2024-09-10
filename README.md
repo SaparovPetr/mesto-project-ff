@@ -1,9 +1,10 @@
 # Проектная работа Mesto
 
-https://github.com/SaparovPetr/mesto-project-ff.git
+Учебный проект на чистом JS. 
+Редактируемый фото-альбом посещенных пользователем мест.
 
 
 
-# Cервис GitHub Pages:
+## Cервис GitHub Pages:
 
-https://saparovpetr.github.io/mesto-project-ff/
+https://saparovpetr.github.io/mesto-project-ff
